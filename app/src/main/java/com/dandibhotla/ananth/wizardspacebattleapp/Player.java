@@ -12,7 +12,6 @@ public class Player {
         yLoc=y;
 
     }
-
     public int getxLoc() {
         return xLoc;
     }
@@ -20,6 +19,8 @@ public class Player {
     public int getyLoc() {
         return yLoc;
     }
+    public void move(double angle, double power){
 
+    }
 
 }

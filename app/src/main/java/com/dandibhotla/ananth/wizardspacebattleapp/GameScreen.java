@@ -70,9 +70,16 @@ public class GameScreen extends AppCompatActivity {
               break;
       }
 
-      if(event.getAction()==MotionEvent.ACTION_MOVE){
-          Log.v("move","move");
-      }
+
         return true;
+    }
+
+    public void update(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }).start();
     }
 }
