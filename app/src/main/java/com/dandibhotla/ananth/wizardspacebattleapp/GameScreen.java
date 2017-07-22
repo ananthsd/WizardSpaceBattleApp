@@ -1,66 +1,37 @@
 package com.dandibhotla.ananth.wizardspacebattleapp;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Point;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.Window;
 import android.view.WindowManager;
 
-public class GameScreen extends AppCompatActivity {
+public class GameScreen extends Activity {
     private VelocityTracker mVelocityTracker = null;
     private Point point1;
+    private GLSurfaceView mGLView;
+    private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
+    private float mPreviousX;
+    private float mPreviousY;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.content_game_screen);
+        mGLView = new MyGLSurfaceView(this);
+        setContentView(mGLView);
         point1 = new Point();
 
     }
     public boolean onTouchEvent(MotionEvent event) {
-        int index = event.getActionIndex();
         int action = event.getActionMasked();
-        int pointerId = event.getPointerId(index);
 
-      /*  switch(action) {
-            case MotionEvent.ACTION_DOWN:
-                if(mVelocityTracker == null) {
-                    // Retrieve a new VelocityTracker object to watch the velocity of a motion.
-                    mVelocityTracker = VelocityTracker.obtain();
-                }
-                else {
-                    // Reset the velocity tracker back to its initial state.
-                    mVelocityTracker.clear();
-                }
-                // Add a user's movement to the tracker.
-                mVelocityTracker.addMovement(event);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                mVelocityTracker.addMovement(event);
-                // When you want to determine the velocity, call
-                // computeCurrentVelocity(). Then call getXVelocity()
-                // and getYVelocity() to retrieve the velocity for each pointer ID.
-
-                mVelocityTracker.computeCurrentVelocity(1000);
-                // Log velocity of pixels per second
-                // Best practice to use VelocityTrackerCompat where possible.
-                Log.d("velocity", "X velocity: " +
-                        VelocityTrackerCompat.getXVelocity(mVelocityTracker,
-                                pointerId));
-                Log.d("velocity", "Y velocity: " +
-                        VelocityTrackerCompat.getYVelocity(mVelocityTracker,
-                                pointerId));
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                // Return a VelocityTracker object back to be re-used by others.
-                mVelocityTracker.recycle();
-                break;
-        }*/
       switch (action){
           case MotionEvent.ACTION_DOWN:
               point1.set((int)event.getX(),(int)event.getY());
@@ -74,12 +45,54 @@ public class GameScreen extends AppCompatActivity {
         return true;
     }
 
-    public void update(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+    class MyGLSurfaceView extends GLSurfaceView {
 
+        private final MyGLRenderer mRenderer;
+
+        public MyGLSurfaceView(Context context){
+            super(context);
+
+            // Create an OpenGL ES 2.0 context
+            setEGLContextClientVersion(2);
+
+            mRenderer = new MyGLRenderer();
+
+            // Set the Renderer for drawing on the GLSurfaceView
+
+            setRenderer(mRenderer);
+            setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent e) {
+            float x = e.getX();
+            float y = e.getY();
+
+            switch (e.getAction()) {
+                case MotionEvent.ACTION_MOVE:
+
+                    float dx = x - mPreviousX;
+                    float dy = y - mPreviousY;
+
+                    // reverse direction of rotation above the mid-line
+                    if (y > getHeight() / 2) {
+                        dx = dx * -1 ;
+                    }
+
+                    // reverse direction of rotation to left of the mid-line
+                    if (x < getWidth() / 2) {
+                        dy = dy * -1 ;
+                    }
+
+                    mRenderer.setAngle(
+                            mRenderer.getAngle() -
+                                    ((dx + dy) * TOUCH_SCALE_FACTOR));
+                    requestRender();
             }
-        }).start();
+
+            mPreviousX = x;
+            mPreviousY = y;
+            return true;
+        }
     }
 }
