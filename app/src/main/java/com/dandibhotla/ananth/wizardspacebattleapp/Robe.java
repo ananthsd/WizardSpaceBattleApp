@@ -11,8 +11,10 @@ import java.nio.FloatBuffer;
  */
 
 public class Robe {
+    public static final String RIGHT_ROBE="RIGHT";
+    public static final String LEFT_ROBE="LEFT";
     private final int mProgram;
-    private FloatBuffer vertexBuffer;
+    private FloatBuffer vertexBufferRight, vertexBufferLeft;
     private final String vertexShaderCode =
             // This matrix member variable provides a hook to manipulate
             // the coordinates of the objects that use this vertex shader
@@ -40,30 +42,46 @@ public class Robe {
               -0.1f, -0.1f, 0.0f,   // bottom left
               0.1f, -0.1f, 0.0f,   // bottom right
               0.1f,  0.1f, 0.0f }; // top right*/
-    static float triangleCoords[] = {   // in counterclockwise order:
+    static float triangleCoordsRight[] = {   // in counterclockwise order:
             -0.1f,  -0.1f, 0.0f, // top
             -0.1f, 0.1f, 0.0f, // bottom left
             0.0f, 0.1f, 0.0f  // bottom right
     };
-
+    static float triangleCoordsLeft[] = {   // in counterclockwise order:
+            0.0f,  0.1f, 0.0f, // top
+            0.1f, 0.1f, 0.0f, // bottom left
+            0.1f, -0.1f, 0.0f  // bottom right
+    };
     // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 0.63671875f, 0.76953125f, 0.22265625f, 1.0f };
+    float color[] = { 1f, 1f, 1f, 1.0f };
 
     public Robe() {
         // initialize vertex byte buffer for shape coordinates
-        ByteBuffer bb = ByteBuffer.allocateDirect(
+        ByteBuffer bbRight = ByteBuffer.allocateDirect(
                 // (number of coordinate values * 4 bytes per float)
-                triangleCoords.length * 4);
+                triangleCoordsRight.length * 4);
         // use the device hardware's native byte order
-        bb.order(ByteOrder.nativeOrder());
+        bbRight.order(ByteOrder.nativeOrder());
 
         // create a floating point buffer from the ByteBuffer
-        vertexBuffer = bb.asFloatBuffer();
+        vertexBufferRight = bbRight.asFloatBuffer();
         // add the coordinates to the FloatBuffer
-        vertexBuffer.put(triangleCoords);
+        vertexBufferRight.put(triangleCoordsRight);
         // set the buffer to read the first coordinate
-        vertexBuffer.position(0);
+        vertexBufferRight.position(0);
 
+        ByteBuffer bbLeft = ByteBuffer.allocateDirect(
+                // (number of coordinate values * 4 bytes per float)
+                triangleCoordsLeft.length * 4);
+        // use the device hardware's native byte order
+        bbLeft.order(ByteOrder.nativeOrder());
+
+        // create a floating point buffer from the ByteBuffer
+        vertexBufferLeft = bbLeft.asFloatBuffer();
+        // add the coordinates to the FloatBuffer
+        vertexBufferLeft.put(triangleCoordsLeft);
+        // set the buffer to read the first coordinate
+        vertexBufferLeft.position(0);
         int vertexShader = MyGLRenderer.loadShader(GLES20.GL_VERTEX_SHADER,
                 vertexShaderCode);
         int fragmentShader = MyGLRenderer.loadShader(GLES20.GL_FRAGMENT_SHADER,
@@ -85,10 +103,10 @@ public class Robe {
     private int mPositionHandle;
     private int mColorHandle;
 
-    private final int vertexCount = triangleCoords.length / COORDS_PER_VERTEX;
+    private final int vertexCount = triangleCoordsRight.length / COORDS_PER_VERTEX;
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 
-    public void draw(float[] mvpMatrix) {
+    public void draw(float[] mvpMatrix, String orientation) {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(mProgram);
 
@@ -98,11 +116,17 @@ public class Robe {
         // Enable a handle to the triangle vertices
         GLES20.glEnableVertexAttribArray(mPositionHandle);
 
-        // Prepare the triangle coordinate data
-        GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT, false,
-                vertexStride, vertexBuffer);
-
+        if(orientation.equals(RIGHT_ROBE)) {
+            // Prepare the triangle coordinate data
+            GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
+                    GLES20.GL_FLOAT, false,
+                    vertexStride, vertexBufferRight);
+        }
+        else{
+            GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
+                    GLES20.GL_FLOAT, false,
+                    vertexStride, vertexBufferLeft);
+        }
         // get handle to fragment shader's vColor member
         mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
 

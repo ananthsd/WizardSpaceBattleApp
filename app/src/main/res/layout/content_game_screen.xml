@@ -1,11 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.dandibhotla.ananth.wizardspacebattleapp.GameScreen">
+    android:id="@+id/gameFrame"
+    android:orientation="horizontal">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-</RelativeLayout>
+        <!--<TextView
+            android:id="@+id/p1ScoreText"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="0.5"
+            android:text="P1 Score"
+            android:textColor="@color/colorAccent"
+            />
+
+        <TextView
+            android:id="@+id/p2ScoreText"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="end"
+            android:layout_marginRight="20dp"
+            android:layout_weight="0.5"
+            android:text="P2 Score"
+            android:textAlignment="textEnd"
+            android:textColor="@color/colorAccent"
+            />-->
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:id="@+id/leftRelativeLayout"><TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="P1 Score"
+            android:textColor="@color/colorAccent"
+            android:paddingLeft="10dp"/></RelativeLayout>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:id="@+id/rightRelativeLayout">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="10dp"
+                android:text="P2 Score"
+                android:textAlignment="textEnd"
+                android:gravity="end"
+                android:textColor="@color/colorAccent"
+                /></RelativeLayout>
+    </LinearLayout>
+</FrameLayout>

@@ -38,25 +38,29 @@ public class Square {
     private int mPositionHandle;
     private int mColorHandle;
     private int mMVPMatrixHandle;
+    public static final String COLOR_RED = "red";
+    public static final String COLOR_BLUE = "blue";
+    private String color;
 
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
     static float squareCoords[] = {
-            -0.1f,  0.1f, 0.0f,   // top left
+            -0.1f, 0.1f, 0.0f,   // top left
             -0.1f, -0.1f, 0.0f,   // bottom left
             0.1f, -0.1f, 0.0f,   // bottom right
-            0.1f,  0.1f, 0.0f }; // top right
+            0.1f, 0.1f, 0.0f}; // top right
 
-    private final short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
+    private final short drawOrder[] = {0, 1, 2, 0, 2, 3}; // order to draw vertices
 
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 
-    float color[] = { 0.2f, 0.709803922f, 0.898039216f, 1.0f };
+    float colorP1[] = {0f, 0f, 1f, 1.0f};
+    float colorP2[] = {1f, 0f, 0f, 1f};
 
     /**
      * Sets up the drawing object data for use in an OpenGL ES context.
      */
-    public Square() {
+    public Square(String color) {
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 // (# of coordinate values * 4 bytes per float)
@@ -86,14 +90,15 @@ public class Square {
         mProgram = GLES20.glCreateProgram();             // create empty OpenGL Program
         GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
         GLES20.glAttachShader(mProgram, fragmentShader); // add the fragment shader to program
-        GLES20.glLinkProgram(mProgram);                  // create OpenGL program executables
+        GLES20.glLinkProgram(mProgram);// create OpenGL program executables
+        this.color = color;
     }
 
     /**
      * Encapsulates the OpenGL ES instructions for drawing this shape.
      *
      * @param mvpMatrix - The Model View Project matrix in which to draw
-     * this shape.
+     *                  this shape.
      */
     public void draw(float[] mvpMatrix) {
         // Add program to OpenGL environment
@@ -115,8 +120,11 @@ public class Square {
         mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
 
         // Set color for drawing the triangle
-        GLES20.glUniform4fv(mColorHandle, 1, color, 0);
-
+        if (color.equals(COLOR_RED)) {
+            GLES20.glUniform4fv(mColorHandle, 1, colorP2, 0);
+        } else {
+            GLES20.glUniform4fv(mColorHandle, 1, colorP1, 0);
+        }
         // get handle to shape's transformation matrix
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
         MyGLRenderer.checkGlError("glGetUniformLocation");

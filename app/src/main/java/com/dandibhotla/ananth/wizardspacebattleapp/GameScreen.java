@@ -5,59 +5,120 @@ import android.content.Context;
 import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class GameScreen extends Activity {
     private VelocityTracker mVelocityTracker = null;
-    private Point point1;
+    private Point point1, point2;
     private MyGLSurfaceView mGLView;
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
     private float mPreviousX;
     private float mPreviousY;
-    private Player player1,player2;
-
+    private float mPreviousX2;
+    private float mPreviousY2;
+    private Player player1, player2;
+    private int widthPixels, heightPixels;
+    private boolean p1TouchFirst;
+    private TextView score1, score2;
+    private RelativeLayout leftLayout,rightLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mGLView = new MyGLSurfaceView(this);
-        setContentView(mGLView);
+        setContentView(R.layout.content_game_screen);
+        FrameLayout frame = (FrameLayout) findViewById(R.id.gameFrame);
+       /* score1 = (TextView) findViewById(R.id.p1ScoreText);
+        score2 = (TextView) findViewById(R.id.p2ScoreText);
+
+        score1.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.v("touch","left");
+                return true;
+            }
+        });
+        score2.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.v("touch","right");
+                return true;
+            }
+        });*/
+       leftLayout = (RelativeLayout)findViewById(R.id.leftRelativeLayout);
+       rightLayout = (RelativeLayout)findViewById(R.id.rightRelativeLayout);
+        leftLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                float x = event.getX();
+                float y = event.getY();
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        player1.move(Math.atan2(y - mPreviousY, x - mPreviousX), Math.sqrt((x - mPreviousX) * (x - mPreviousX) + (y - mPreviousY) * (y - mPreviousY)));
+                        mGLView.requestRender();
+                        break;
+                    case MotionEvent.ACTION_DOWN:
+                        mPreviousX = x;
+                        mPreviousY = y;
+                }
+                return true;
+            }
+        });
+        rightLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                float x = event.getX();
+                float y = event.getY();
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        player2.move(Math.atan2(y - mPreviousY2, x - mPreviousX2), Math.sqrt((x - mPreviousX2) * (x - mPreviousX2) + (y - mPreviousY2) * (y - mPreviousY2)));
+
+                        mGLView.requestRender();
+                        break;
+                    case MotionEvent.ACTION_DOWN:
+                        mPreviousX2 = x;
+                        mPreviousY2 = y;
+                }
+                return true;
+            }
+        });
+
+        frame.addView(mGLView,0);
+
         point1 = new Point();
+        point2 = new Point();
 
+        // setContentView(mGLView);
 
+        DisplayMetrics display = getResources().getDisplayMetrics();
+        widthPixels = display.widthPixels;
+        heightPixels = display.heightPixels;
     }
-    public boolean onTouchEvent(MotionEvent event) {
-        int action = event.getActionMasked();
-
-      switch (action){
-          case MotionEvent.ACTION_DOWN:
-              point1.set((int)event.getX(),(int)event.getY());
-              break;
-          case MotionEvent.ACTION_MOVE:
-              Log.v("movement","Distance: "+  Math.sqrt(Math.pow(event.getX() - point1.x, 2) + Math.pow(event.getY() - point1.y, 2)));
-              break;
-      }
 
 
-        return true;
-    }
 
     class MyGLSurfaceView extends GLSurfaceView {
 
         private final MyGLRenderer mRenderer;
-        public float getScreenHeight(){
+
+        public float getScreenHeight() {
             return mRenderer.getScreenHeight();
         }
-        public float getScreenWidth(){
+
+        public float getScreenWidth() {
             return mRenderer.getScreenWidth();
         }
-        public MyGLSurfaceView(Context context){
+
+        public MyGLSurfaceView(Context context) {
             super(context);
 
             // Create an OpenGL ES 2.0 context
@@ -75,41 +136,78 @@ public class GameScreen extends Activity {
 
         @Override
         public boolean onTouchEvent(MotionEvent e) {
+            /*
             float x = e.getX();
             float y = e.getY();
 
-            switch (e.getAction()) {
-                case MotionEvent.ACTION_MOVE:
-                    player1.move(Math.atan2(y-mPreviousY,x-mPreviousX),Math.sqrt((x-mPreviousX)*(x-mPreviousX)+(y-mPreviousY)*(y-mPreviousY)));
+            if (x < widthPixels/2) {
+                switch (e.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        player1.move(Math.atan2(y - mPreviousY, x - mPreviousX), Math.sqrt((x - mPreviousX) * (x - mPreviousX) + (y - mPreviousY) * (y - mPreviousY)));
 
-                    /*float dx = x - mPreviousX;
-                    float dy = y - mPreviousY;
-
-                    // reverse direction of rotation above the mid-line
-                    if (y > getHeight() / 2) {
-                        dx = dx * -1 ;
-                    }
-
-                    // reverse direction of rotation to left of the mid-line
-                    if (x < getWidth() / 2) {
-                        dy = dy * -1 ;
-                    }
-
-                    mRenderer.setAngle(
-                            mRenderer.getAngle() -
-                                    ((dx + dy) * TOUCH_SCALE_FACTOR));*/
-                    requestRender();
-                    break;
-                case MotionEvent.ACTION_DOWN:
-                    mPreviousX = x;
-                    mPreviousY = y;
+                        requestRender();
+                        break;
+                    case MotionEvent.ACTION_DOWN:
+                        mPreviousX = x;
+                        mPreviousY = y;
+                }
             }
+            else{
 
+                switch (e.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        player2.move(Math.atan2(y - mPreviousY2, x - mPreviousX2), Math.sqrt((x - mPreviousX2) * (x - mPreviousX2) + (y - mPreviousY2) * (y - mPreviousY2)));
 
-            return true;
+                        requestRender();
+                        break;
+                    case MotionEvent.ACTION_DOWN:
+                        mPreviousX2 = x;
+                        mPreviousY2 = y;
+                }
+            }
+*/
+
+            if (e.getPointerCount() == 1) {
+
+                float x = e.getX();
+                float y = e.getY();
+
+                if (x < widthPixels / 2) {
+                    p1TouchFirst = true;
+                    switch (e.getAction()) {
+
+                        case MotionEvent.ACTION_MOVE:
+                            player1.move(Math.atan2(y - mPreviousY, x - mPreviousX), Math.sqrt((x - mPreviousX) * (x - mPreviousX) + (y - mPreviousY) * (y - mPreviousY)));
+
+                            requestRender();
+                            break;
+                        case MotionEvent.ACTION_DOWN:
+                            mPreviousX = x;
+                            mPreviousY = y;
+                    }
+                } else {
+                    p1TouchFirst = false;
+                    switch (e.getAction()) {
+                        case MotionEvent.ACTION_MOVE:
+                            player2.move(Math.atan2(y - mPreviousY2, x - mPreviousX2), Math.sqrt((x - mPreviousX2) * (x - mPreviousX2) + (y - mPreviousY2) * (y - mPreviousY2)));
+
+                            requestRender();
+                            break;
+                        case MotionEvent.ACTION_DOWN:
+                            mPreviousX2 = x;
+                            mPreviousY2 = y;
+                    }
+                }
+            } else {
+                if (p1TouchFirst) {
+
+                }
+            }
+            return false;
         }
 
     }
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);

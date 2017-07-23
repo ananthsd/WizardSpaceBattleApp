@@ -15,16 +15,17 @@ import static com.google.android.gms.plus.PlusOneDummyView.TAG;
  */
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
-    private Hat mHat;
-    private Robe robe;
-    private Square mSquare;
+    private Hat mHat, mHat2;
+    private Robe robe, robe2;
+    private Square mSquare, mSquare2;
     private float screenWidth, screenHeight;
     private Player player1, player2;
-    private int pixelWidth,pixelheight;
+    private int pixelWidth, pixelheight;
     private Context context;
+    private Circle p1Eye,p2Eye;
     public MyGLRenderer(Context context) {
-        player1 = new Player(context,0,0);
-        player2 = new Player(context,0,0);
+        player1 = new Player(context, Player.PLAYER_ONE_START);
+        player2 = new Player(context, Player.PLAYER_TWO_START);
 
     }
 
@@ -39,12 +40,20 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 unused, javax.microedition.khronos.egl.EGLConfig config) {
         // Set the background frame color
-        GLES20.glClearColor(0.25f, 0.93f, 0.36f, 1.0f);
+        //  GLES20.glClearColor(0.25f, 0.93f, 0.36f, 1.0f);
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         // initialize a triangle
         mHat = new Hat();
         robe = new Robe();
         // initialize a square
-        mSquare = new Square();
+        mSquare = new Square(Square.COLOR_BLUE);
+
+        mHat2 = new Hat();
+        robe2 = new Robe();
+        // initialize a square
+        mSquare2 = new Square(Square.COLOR_RED);
+        p1Eye = new Circle(-0.07f,0.02f);
+        p2Eye = new Circle(0.07f,0.02f);
     }
 
     private float[] mRotationMatrix = new float[16];
@@ -62,15 +71,31 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
         // Create a rotation transformation for the triangle
         float xTranslate = screenWidth;
-      //  Matrix.translateM(mMVPMatrix, 0, xTranslate, 0, 0); // apply translation
-      //  Matrix.translateM(mMVPMatrix, 0, -0.2f, 0, 0); // apply translation
-        Log.v("movementGuy","X: "+(float) (player1.getxLoc()/((double)pixelWidth))+"; Y:"+ (float) (player1.getyLoc()/((double)pixelheight)) );
-     //   Matrix.translateM(mMVPMatrix, 0, (float) (player1.getxLoc()/((double)pixelWidth)), (float) (player1.getyLoc()/((double)pixelheight)), 0); // apply translation
+        //  Matrix.translateM(mMVPMatrix, 0, xTranslate, 0, 0); // apply translation
+        //  Matrix.translateM(mMVPMatrix, 0, -0.2f, 0, 0); // apply translation
+      //  Log.v("movementGuy", "X: " + (float) (player1.getxLoc() / ((double) pixelWidth)) + "; Y:" + (float) (player1.getyLoc() / ((double) pixelheight)));
+        //   Matrix.translateM(mMVPMatrix, 0, (float) (player1.getxLoc()/((double)pixelWidth)), (float) (player1.getyLoc()/((double)pixelheight)), 0); // apply translation
         Matrix.translateM(mMVPMatrix, 0, player1.getxLoc(), player1.getyLoc(), 0); // apply translation
-       // Matrix.scaleM(mMVPMatrix, 0, 0.75f, 0.75f, 1);
+        // Matrix.scaleM(mMVPMatrix, 0, 0.75f, 0.75f, 1);
         mSquare.draw(mMVPMatrix);
         mHat.draw(mMVPMatrix);
-        robe.draw(mMVPMatrix);
+        if (player1.getxLoc() < 0) {
+            robe.draw(mMVPMatrix, Robe.RIGHT_ROBE);
+        } else {
+            robe.draw(mMVPMatrix, Robe.LEFT_ROBE);
+        }
+        p1Eye.draw(mMVPMatrix);
+        // Calculate the projection and view transformation
+        Matrix.multiplyMM(mMVPMatrix2, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+        Matrix.translateM(mMVPMatrix2, 0, player2.getxLoc(), player2.getyLoc(), 0);
+        mSquare2.draw(mMVPMatrix2);
+        mHat2.draw(mMVPMatrix2);
+        if (player2.getxLoc() < 0) {
+            robe2.draw(mMVPMatrix2, Robe.RIGHT_ROBE);
+        } else {
+            robe2.draw(mMVPMatrix2, Robe.LEFT_ROBE);
+        }
+        p2Eye.draw(mMVPMatrix2);
         // Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
 
         // Combine the rotation matrix with the projection and camera view
@@ -83,6 +108,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private final float[] mMVPMatrix = new float[16];
+    private final float[] mMVPMatrix2 = new float[16];
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
 
@@ -92,8 +118,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float ratio = (float) width / height;
         screenWidth = ratio;
         screenHeight = 1 / ratio;
-        pixelheight=height;
-        pixelWidth=width;
+        pixelheight = height;
+        pixelWidth = width;
         Log.v("screenstuff", ratio + "");
         // this projection matrix is applied to object coordinates
         // in the onDrawFrame() method

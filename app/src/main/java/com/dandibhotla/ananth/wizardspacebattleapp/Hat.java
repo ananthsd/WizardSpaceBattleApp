@@ -47,7 +47,7 @@ public class Hat {
     };
 
     // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 0.63671875f, 0.76953125f, 0.22265625f, 1.0f };
+    float color[] = { 1f, 1f, 1f, 1.0f };
 
     public Hat() {
         // initialize vertex byte buffer for shape coordinates
