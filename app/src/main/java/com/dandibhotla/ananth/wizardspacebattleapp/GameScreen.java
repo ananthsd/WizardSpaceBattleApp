@@ -8,16 +8,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class GameScreen extends Activity {
     private VelocityTracker mVelocityTracker = null;
     private Point point1;
-    private GLSurfaceView mGLView;
+    private MyGLSurfaceView mGLView;
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
     private float mPreviousX;
     private float mPreviousY;
+    private Player player1,player2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +29,7 @@ public class GameScreen extends Activity {
         mGLView = new MyGLSurfaceView(this);
         setContentView(mGLView);
         point1 = new Point();
+
 
     }
     public boolean onTouchEvent(MotionEvent event) {
@@ -48,19 +51,26 @@ public class GameScreen extends Activity {
     class MyGLSurfaceView extends GLSurfaceView {
 
         private final MyGLRenderer mRenderer;
-
+        public float getScreenHeight(){
+            return mRenderer.getScreenHeight();
+        }
+        public float getScreenWidth(){
+            return mRenderer.getScreenWidth();
+        }
         public MyGLSurfaceView(Context context){
             super(context);
 
             // Create an OpenGL ES 2.0 context
             setEGLContextClientVersion(2);
 
-            mRenderer = new MyGLRenderer();
+            mRenderer = new MyGLRenderer(context);
 
             // Set the Renderer for drawing on the GLSurfaceView
 
             setRenderer(mRenderer);
             setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+            player1 = mRenderer.getPlayer1();
+            player2 = mRenderer.getPlayer2();
         }
 
         @Override
@@ -70,8 +80,9 @@ public class GameScreen extends Activity {
 
             switch (e.getAction()) {
                 case MotionEvent.ACTION_MOVE:
+                    player1.move(Math.atan2(y-mPreviousY,x-mPreviousX),Math.sqrt((x-mPreviousX)*(x-mPreviousX)+(y-mPreviousY)*(y-mPreviousY)));
 
-                    float dx = x - mPreviousX;
+                    /*float dx = x - mPreviousX;
                     float dy = y - mPreviousY;
 
                     // reverse direction of rotation above the mid-line
@@ -86,13 +97,30 @@ public class GameScreen extends Activity {
 
                     mRenderer.setAngle(
                             mRenderer.getAngle() -
-                                    ((dx + dy) * TOUCH_SCALE_FACTOR));
+                                    ((dx + dy) * TOUCH_SCALE_FACTOR));*/
                     requestRender();
+                    break;
+                case MotionEvent.ACTION_DOWN:
+                    mPreviousX = x;
+                    mPreviousY = y;
             }
 
-            mPreviousX = x;
-            mPreviousY = y;
+
             return true;
+        }
+
+    }
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 }

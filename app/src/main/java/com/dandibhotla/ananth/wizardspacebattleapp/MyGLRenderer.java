@@ -1,5 +1,6 @@
 package com.dandibhotla.ananth.wizardspacebattleapp;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -14,19 +15,40 @@ import static com.google.android.gms.plus.PlusOneDummyView.TAG;
  */
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
-    private Triangle mTriangle;
-    private Square   mSquare;
+    private Hat mHat;
+    private Robe robe;
+    private Square mSquare;
+    private float screenWidth, screenHeight;
+    private Player player1, player2;
+    private int pixelWidth,pixelheight;
+    private Context context;
+    public MyGLRenderer(Context context) {
+        player1 = new Player(context,0,0);
+        player2 = new Player(context,0,0);
+
+    }
+
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    public Player getPlayer2() {
+        return player2;
+    }
 
     @Override
     public void onSurfaceCreated(GL10 unused, javax.microedition.khronos.egl.EGLConfig config) {
         // Set the background frame color
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glClearColor(0.25f, 0.93f, 0.36f, 1.0f);
         // initialize a triangle
-        mTriangle = new Triangle();
+        mHat = new Hat();
+        robe = new Robe();
         // initialize a square
         mSquare = new Square();
     }
+
     private float[] mRotationMatrix = new float[16];
+
     @Override
     public void onDrawFrame(GL10 unused) {
         float[] scratch = new float[16];
@@ -39,30 +61,46 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
         // Create a rotation transformation for the triangle
+        float xTranslate = screenWidth;
+      //  Matrix.translateM(mMVPMatrix, 0, xTranslate, 0, 0); // apply translation
+      //  Matrix.translateM(mMVPMatrix, 0, -0.2f, 0, 0); // apply translation
+        Log.v("movementGuy","X: "+(float) (player1.getxLoc()/((double)pixelWidth))+"; Y:"+ (float) (player1.getyLoc()/((double)pixelheight)) );
+     //   Matrix.translateM(mMVPMatrix, 0, (float) (player1.getxLoc()/((double)pixelWidth)), (float) (player1.getyLoc()/((double)pixelheight)), 0); // apply translation
+        Matrix.translateM(mMVPMatrix, 0, player1.getxLoc(), player1.getyLoc(), 0); // apply translation
+       // Matrix.scaleM(mMVPMatrix, 0, 0.75f, 0.75f, 1);
         mSquare.draw(mMVPMatrix);
-        Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
+        mHat.draw(mMVPMatrix);
+        robe.draw(mMVPMatrix);
+        // Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
 
         // Combine the rotation matrix with the projection and camera view
         // Note that the mMVPMatrix factor *must be first* in order
         // for the matrix multiplication product to be correct.
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-
+        // Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+        // Matrix.translateM(scratch,0, -1.0f, 0, 0);
         // Draw shape
-        mTriangle.draw(scratch);
+        // mHat.draw(scratch);
     }
+
     private final float[] mMVPMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
+
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
         float ratio = (float) width / height;
-
+        screenWidth = ratio;
+        screenHeight = 1 / ratio;
+        pixelheight=height;
+        pixelWidth=width;
+        Log.v("screenstuff", ratio + "");
         // this projection matrix is applied to object coordinates
         // in the onDrawFrame() method
         Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
     }
-    public static int loadShader(int type, String shaderCode){
+
+    public static int loadShader(int type, String shaderCode) {
 
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
         // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
@@ -74,6 +112,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         return shader;
     }
+
     public volatile float mAngle;
 
     public float getAngle() {
@@ -83,11 +122,20 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void setAngle(float angle) {
         mAngle = angle;
     }
+
     public static void checkGlError(String glOperation) {
         int error;
         while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
             Log.e(TAG, glOperation + ": glError " + error);
             throw new RuntimeException(glOperation + ": glError " + error);
         }
+    }
+
+    public float getScreenWidth() {
+        return screenWidth;
+    }
+
+    public float getScreenHeight() {
+        return screenHeight;
     }
 }
