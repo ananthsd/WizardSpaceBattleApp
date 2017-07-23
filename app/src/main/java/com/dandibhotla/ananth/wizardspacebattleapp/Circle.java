@@ -14,9 +14,12 @@ import java.nio.FloatBuffer;
 public class Circle {
 
     private  int mProgram, mPositionHandle, mColorHandle, mMVPMatrixHandle ;
-    private FloatBuffer mVertexBuffer;
-    private float vertices[] = new float[364 * 3];
+    private FloatBuffer mVertexBuffer,mVertexBuffer2;
+    private float verticesFaceRight[] = new float[364 * 3];
+    private float verticesFaceLeft[] = new float[364 * 3];
     float color[] = { 1f, 1f, 1f, 1.0f };
+    public static final String FACE_LEFT = "left";
+    public static final String FACE_RIGHT = "right";
 
     private final String vertexShaderCode =
             "uniform mat4 uMVPMatrix;" +
@@ -32,24 +35,53 @@ public class Circle {
                     "  gl_FragColor = vColor;" +
                     "}";
 
-    public Circle(float x, float y){
-        vertices[0] = x;
-        vertices[1] = y;
-        vertices[2] = 0;
+    public Circle(){
+        /*
+        p1Eye = new Circle(-0.07f,0.02f);
+        p2Eye = new Circle(0.07f,0.02f);
+        */
+
+
+            verticesFaceRight[0] = 0.07f;
+            verticesFaceRight[1] = 0.02f;
+
+        verticesFaceRight[0] = -0.07f;
+        verticesFaceRight[1] = 0.02f;
+        verticesFaceRight[2] = 0;
 
         for(int i =1; i <364; i++){
-            vertices[(i * 3)+ 0] = (float) (0.02 * Math.cos((3.14/180) * (float)i ) + vertices[0]);
-            vertices[(i * 3)+ 1] = (float) (0.02 * Math.sin((3.14/180) * (float)i ) + vertices[1]);
-            vertices[(i * 3)+ 2] = 0;
+            verticesFaceRight[(i * 3)+ 0] = (float) (0.02 * Math.cos((3.14/180) * (float)i ) + verticesFaceRight[0]);
+            verticesFaceRight[(i * 3)+ 1] = (float) (0.02 * Math.sin((3.14/180) * (float)i ) + verticesFaceRight[1]);
+            verticesFaceRight[(i * 3)+ 2] = 0;
         }
 
 
-        Log.v("Thread",""+vertices[0]+","+vertices[1]+","+vertices[2]);
-        ByteBuffer vertexByteBuffer = ByteBuffer.allocateDirect(vertices.length * 4);
+        Log.v("Thread",""+ verticesFaceRight[0]+","+ verticesFaceRight[1]+","+ verticesFaceRight[2]);
+        ByteBuffer vertexByteBuffer = ByteBuffer.allocateDirect(verticesFaceRight.length * 4);
         vertexByteBuffer.order(ByteOrder.nativeOrder());
         mVertexBuffer = vertexByteBuffer.asFloatBuffer();
-        mVertexBuffer.put(vertices);
+        mVertexBuffer.put(verticesFaceRight);
         mVertexBuffer.position(0);
+
+        verticesFaceLeft[0] = 0.07f;
+        verticesFaceLeft[1] = 0.02f;
+        verticesFaceLeft[2] = 0;
+
+        for(int i =1; i <364; i++){
+            verticesFaceLeft[(i * 3)+ 0] = (float) (0.02 * Math.cos((3.14/180) * (float)i ) + verticesFaceLeft[0]);
+            verticesFaceLeft[(i * 3)+ 1] = (float) (0.02 * Math.sin((3.14/180) * (float)i ) + verticesFaceLeft[1]);
+            verticesFaceLeft[(i * 3)+ 2] = 0;
+        }
+
+
+        Log.v("Thread",""+ verticesFaceLeft[0]+","+ verticesFaceLeft[1]+","+ verticesFaceLeft[2]);
+        ByteBuffer vertexByteBuffer2 = ByteBuffer.allocateDirect(verticesFaceLeft.length * 4);
+        vertexByteBuffer2.order(ByteOrder.nativeOrder());
+        mVertexBuffer2 = vertexByteBuffer2.asFloatBuffer();
+        mVertexBuffer2.put(verticesFaceLeft);
+        mVertexBuffer2.position(0);
+
+
         int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
         int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
@@ -69,20 +101,27 @@ public class Circle {
     }
 
 
-    public void draw (float[] mvpMatrix){
+    public void draw (float[] mvpMatrix,String position){
 
         GLES20.glUseProgram(mProgram);
 
         // get handle to vertex shader's vPosition member
         mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
 
-        // Enable a handle to the triangle vertices
+        // Enable a handle to the triangle verticesFaceRight
         GLES20.glEnableVertexAttribArray(mPositionHandle);
 
         // Prepare the triangle coordinate data
-        GLES20.glVertexAttribPointer(mPositionHandle, 3,
-                GLES20.GL_FLOAT, false,12
-                ,mVertexBuffer);
+        if(position.equals(FACE_RIGHT)) {
+            GLES20.glVertexAttribPointer(mPositionHandle, 3,
+                    GLES20.GL_FLOAT, false, 12
+                    , mVertexBuffer);
+        }
+        else{
+            GLES20.glVertexAttribPointer(mPositionHandle, 3,
+                    GLES20.GL_FLOAT, false, 12
+                    , mVertexBuffer2);
+        }
 
         // get handle to fragment shader's vColor member
         mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");

@@ -52,8 +52,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         robe2 = new Robe();
         // initialize a square
         mSquare2 = new Square(Square.COLOR_RED);
-        p1Eye = new Circle(-0.07f,0.02f);
-        p2Eye = new Circle(0.07f,0.02f);
+        p1Eye = new Circle();
+        p2Eye = new Circle();
     }
 
     private float[] mRotationMatrix = new float[16];
@@ -79,23 +79,27 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Matrix.scaleM(mMVPMatrix, 0, 0.75f, 0.75f, 1);
         mSquare.draw(mMVPMatrix);
         mHat.draw(mMVPMatrix);
-        if (player1.getxLoc() < 0) {
+        if (player1.getxLoc() < player2.getxLoc()) {
             robe.draw(mMVPMatrix, Robe.RIGHT_ROBE);
+            p1Eye.draw(mMVPMatrix,Circle.FACE_LEFT);
         } else {
             robe.draw(mMVPMatrix, Robe.LEFT_ROBE);
+            p1Eye.draw(mMVPMatrix,Circle.FACE_RIGHT);
         }
-        p1Eye.draw(mMVPMatrix);
+
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix2, 0, mProjectionMatrix, 0, mViewMatrix, 0);
         Matrix.translateM(mMVPMatrix2, 0, player2.getxLoc(), player2.getyLoc(), 0);
         mSquare2.draw(mMVPMatrix2);
         mHat2.draw(mMVPMatrix2);
-        if (player2.getxLoc() < 0) {
+        if (player2.getxLoc() < player1.getxLoc()) {
             robe2.draw(mMVPMatrix2, Robe.RIGHT_ROBE);
+            p2Eye.draw(mMVPMatrix2,Circle.FACE_LEFT);
         } else {
             robe2.draw(mMVPMatrix2, Robe.LEFT_ROBE);
+            p2Eye.draw(mMVPMatrix2,Circle.FACE_RIGHT);
         }
-        p2Eye.draw(mMVPMatrix2);
+
         // Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
 
         // Combine the rotation matrix with the projection and camera view
