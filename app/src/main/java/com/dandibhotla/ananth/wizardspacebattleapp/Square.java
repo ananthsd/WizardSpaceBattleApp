@@ -117,7 +117,7 @@ public class Square {
 
         // get handle to fragment shader's vColor member
         mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
-
+        GLES20.glDisable(GLES20.GL_BLEND);
         // Set color for drawing the triangle
         if (color.equals(Player.COLOR_RED)) {
             GLES20.glUniform4fv(mColorHandle, 1, colorP2, 0);

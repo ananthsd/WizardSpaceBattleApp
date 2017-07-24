@@ -53,15 +53,15 @@ public class BulletObject {
             0.1f, -0.1f, 0.0f,   // bottom right
             0.1f, 0.1f, 0.0f}; // top right*/
     static float leftCoords[] = {
-            -0.12f, 0.01f, 0.0f,   // top left
-            -0.12f, -0.01f, 0.0f,   // bottom left
+            -0.15f, 0.01f, 0.0f,   // top left
+            -0.15f, -0.01f, 0.0f,   // bottom left
             -0.1f, -0.01f, 0.0f,   // bottom right
             -0.1f, 0.01f, 0.0f}; // top right
     static float rightCoords[] = {
             0.1f, 0.01f, 0.0f,   // top left
             0.1f, -0.01f, 0.0f,   // bottom left
-            0.12f, -0.01f, 0.0f,   // bottom right
-            0.12f, 0.01f, 0.0f}; // top right
+            0.15f, -0.01f, 0.0f,   // bottom right
+            0.15f, 0.01f, 0.0f}; // top right
     private final short drawOrder[] = {0, 1, 2, 0, 2, 3}; // order to draw vertices
 
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex

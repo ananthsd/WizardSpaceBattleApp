@@ -16,6 +16,7 @@ public class Bullet {
     public static final String LEFT_FACING = "left", RIGHT_FACING = "right";
     private float[] mvpMatrix,projectionM,viewM;
     private int widthPixels,heightPixels;
+    private double speed;
     public Bullet(Context context, String direction, String color, int x, int y, float[] projectionM, float[] viewM) {
         this.context = context;
         this.direction = direction;
@@ -33,16 +34,17 @@ public class Bullet {
         Matrix.multiplyMM(mvpMatrix, 0, projectionM, 0, viewM, 0);
         Matrix.translateM(mvpMatrix, 0, getxLoc(), getyLoc(), 0);
         //Log.v("dimen","w:"+widthPixels+"; h:"+heightPixels);
+        speed = 0.05;
     }
 
     public void move() {
         if (direction.equals(LEFT_FACING)) {
-            xLoc-=0.015*1000;
-            Matrix.translateM(mvpMatrix, 0, -0.015f, 0, 0);
+            xLoc-=speed*1000;
+            Matrix.translateM(mvpMatrix, 0, -(float)speed, 0, 0);
 
         } else {
-            xLoc+=0.015*1000;
-            Matrix.translateM(mvpMatrix, 0, 0.015f, 0, 0);
+            xLoc+=speed*1000;
+            Matrix.translateM(mvpMatrix, 0, (float)speed, 0, 0);
         }
     }
 
@@ -73,7 +75,7 @@ public class Bullet {
         return false;
     }
     public boolean collideDetect(Bullet b){
-        if(Math.abs(b.getxLoc()-getxLoc())<0.02f&&Math.abs(b.getyLoc()-getyLoc())<0.02f){
+        if(Math.abs(b.getxLoc()-getxLoc())<0.05f&&Math.abs(b.getyLoc()-getyLoc())<0.02f){
             return true;
         }
         return false;
