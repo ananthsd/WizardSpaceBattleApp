@@ -23,10 +23,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private int pixelWidth, pixelheight;
     private Context context;
     private Circle p1Eye,p2Eye;
+    private BulletObject bulletObject;
+    private int counter;
     public MyGLRenderer(Context context) {
         player1 = new Player(context, Player.PLAYER_ONE_START);
         player2 = new Player(context, Player.PLAYER_TWO_START);
-
     }
 
     public Player getPlayer1() {
@@ -46,20 +47,32 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mHat = new Hat();
         robe = new Robe();
         // initialize a square
-        mSquare = new Square(Square.COLOR_BLUE);
+        mSquare = new Square(Player.COLOR_BLUE);
 
         mHat2 = new Hat();
         robe2 = new Robe();
         // initialize a square
-        mSquare2 = new Square(Square.COLOR_RED);
+        mSquare2 = new Square(Player.COLOR_RED);
         p1Eye = new Circle();
         p2Eye = new Circle();
+
+        bulletObject = new BulletObject();
     }
 
     private float[] mRotationMatrix = new float[16];
 
     @Override
     public void onDrawFrame(GL10 unused) {
+        for(int i = player1.getBullets().size()-1;i>=0;i--){
+            if(player1.getBullets().get(i).outOfBounds()){
+                player1.getBullets().remove(i);
+            }
+        }
+        for(int i = player2.getBullets().size()-1;i>=0;i--){
+            if(player2.getBullets().get(i).outOfBounds()){
+                player2.getBullets().remove(i);
+            }
+        }
         float[] scratch = new float[16];
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
@@ -92,13 +105,37 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.translateM(mMVPMatrix2, 0, player2.getxLoc(), player2.getyLoc(), 0);
         mSquare2.draw(mMVPMatrix2);
         mHat2.draw(mMVPMatrix2);
+        counter++;
+        int counterInterval = 3;
+
         if (player2.getxLoc() < player1.getxLoc()) {
             robe2.draw(mMVPMatrix2, Robe.RIGHT_ROBE);
             p2Eye.draw(mMVPMatrix2,Circle.FACE_LEFT);
+            if(counter==counterInterval){
+                player1.addBullet(Bullet.LEFT_FACING,mProjectionMatrix,mViewMatrix);
+                player2.addBullet(Bullet.RIGHT_FACING,mProjectionMatrix,mViewMatrix);
+                counter=0;
+            }
         } else {
             robe2.draw(mMVPMatrix2, Robe.LEFT_ROBE);
             p2Eye.draw(mMVPMatrix2,Circle.FACE_RIGHT);
+            if(counter==counterInterval){
+                player1.addBullet(Bullet.RIGHT_FACING,mProjectionMatrix,mViewMatrix);
+                player2.addBullet(Bullet.LEFT_FACING,mProjectionMatrix,mViewMatrix);
+                counter=0;
+            }
         }
+        Log.v("bullets",player1.getBullets().size()+";"+player1.getBullets().size());
+      /*  for(Bullet b:player1.getBullets()){
+            bulletObject.draw(b.getMvpMatrix());
+        }
+        for(Bullet b:player2.getBullets()){
+            bulletObject.draw(b.getMvpMatrix());
+        }*/
+        bulletObject.draw(player1.getBullets());
+        bulletObject.draw(player2.getBullets());
+        player1.moveBullets();
+        player2.moveBullets();
 
         // Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
 

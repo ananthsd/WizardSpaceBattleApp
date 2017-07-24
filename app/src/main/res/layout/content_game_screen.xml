@@ -2,9 +2,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/gameFrame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/gameFrame"
     android:orientation="horizontal">
 
     <LinearLayout
@@ -33,29 +33,35 @@
             android:textColor="@color/colorAccent"
             />-->
         <RelativeLayout
+            android:id="@+id/leftRelativeLayout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:id="@+id/leftRelativeLayout"><TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="P1 Score"
-            android:textColor="@color/colorAccent"
-            android:paddingLeft="10dp"/></RelativeLayout>
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:id="@+id/rightRelativeLayout">
+            android:layout_weight="0.5">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="P1 Score"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/player1Score"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rightRelativeLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
                 android:paddingRight="10dp"
                 android:text="P2 Score"
                 android:textAlignment="textEnd"
-                android:gravity="end"
                 android:textColor="@color/colorAccent"
-                /></RelativeLayout>
+                android:id="@+id/player2Score"/>
+        </RelativeLayout>
     </LinearLayout>
 </FrameLayout>

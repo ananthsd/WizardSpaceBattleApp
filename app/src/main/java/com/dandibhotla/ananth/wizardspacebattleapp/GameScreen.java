@@ -2,6 +2,7 @@ package com.dandibhotla.ananth.wizardspacebattleapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -37,23 +38,11 @@ public class GameScreen extends Activity {
         mGLView = new MyGLSurfaceView(this);
         setContentView(R.layout.content_game_screen);
         FrameLayout frame = (FrameLayout) findViewById(R.id.gameFrame);
-       /* score1 = (TextView) findViewById(R.id.p1ScoreText);
-        score2 = (TextView) findViewById(R.id.p2ScoreText);
+        score1 = (TextView) findViewById(R.id.player1Score);
+        score2 = (TextView) findViewById(R.id.player2Score);
 
-        score1.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.v("touch","left");
-                return true;
-            }
-        });
-        score2.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.v("touch","right");
-                return true;
-            }
-        });*/
+        score1.setTextColor(Color.WHITE);
+        score2.setTextColor(Color.WHITE);
        leftLayout = (RelativeLayout)findViewById(R.id.leftRelativeLayout);
        rightLayout = (RelativeLayout)findViewById(R.id.rightRelativeLayout);
         leftLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -129,82 +118,12 @@ public class GameScreen extends Activity {
             // Set the Renderer for drawing on the GLSurfaceView
 
             setRenderer(mRenderer);
-            setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+            //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
             player1 = mRenderer.getPlayer1();
             player2 = mRenderer.getPlayer2();
         }
 
-        @Override
-        public boolean onTouchEvent(MotionEvent e) {
-            /*
-            float x = e.getX();
-            float y = e.getY();
 
-            if (x < widthPixels/2) {
-                switch (e.getAction()) {
-                    case MotionEvent.ACTION_MOVE:
-                        player1.move(Math.atan2(y - mPreviousY, x - mPreviousX), Math.sqrt((x - mPreviousX) * (x - mPreviousX) + (y - mPreviousY) * (y - mPreviousY)));
-
-                        requestRender();
-                        break;
-                    case MotionEvent.ACTION_DOWN:
-                        mPreviousX = x;
-                        mPreviousY = y;
-                }
-            }
-            else{
-
-                switch (e.getAction()) {
-                    case MotionEvent.ACTION_MOVE:
-                        player2.move(Math.atan2(y - mPreviousY2, x - mPreviousX2), Math.sqrt((x - mPreviousX2) * (x - mPreviousX2) + (y - mPreviousY2) * (y - mPreviousY2)));
-
-                        requestRender();
-                        break;
-                    case MotionEvent.ACTION_DOWN:
-                        mPreviousX2 = x;
-                        mPreviousY2 = y;
-                }
-            }
-*/
-
-            if (e.getPointerCount() == 1) {
-
-                float x = e.getX();
-                float y = e.getY();
-
-                if (x < widthPixels / 2) {
-                    p1TouchFirst = true;
-                    switch (e.getAction()) {
-
-                        case MotionEvent.ACTION_MOVE:
-                            player1.move(Math.atan2(y - mPreviousY, x - mPreviousX), Math.sqrt((x - mPreviousX) * (x - mPreviousX) + (y - mPreviousY) * (y - mPreviousY)));
-
-                            requestRender();
-                            break;
-                        case MotionEvent.ACTION_DOWN:
-                            mPreviousX = x;
-                            mPreviousY = y;
-                    }
-                } else {
-                    p1TouchFirst = false;
-                    switch (e.getAction()) {
-                        case MotionEvent.ACTION_MOVE:
-                            player2.move(Math.atan2(y - mPreviousY2, x - mPreviousX2), Math.sqrt((x - mPreviousX2) * (x - mPreviousX2) + (y - mPreviousY2) * (y - mPreviousY2)));
-
-                            requestRender();
-                            break;
-                        case MotionEvent.ACTION_DOWN:
-                            mPreviousX2 = x;
-                            mPreviousY2 = y;
-                    }
-                }
-            } else {
-                if (p1TouchFirst) {
-
-                }
-            }
-            return false;
-        }
 
     }
 
