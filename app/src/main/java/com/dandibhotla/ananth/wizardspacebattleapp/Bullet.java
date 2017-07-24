@@ -72,4 +72,10 @@ public class Bullet {
         }
         return false;
     }
+    public boolean collideDetect(Bullet b){
+        if(Math.abs(b.getxLoc()-getxLoc())<0.02f&&Math.abs(b.getyLoc()-getyLoc())<0.02f){
+            return true;
+        }
+        return false;
+    }
 }

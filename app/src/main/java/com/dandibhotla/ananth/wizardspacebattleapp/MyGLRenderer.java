@@ -6,6 +6,8 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 import javax.microedition.khronos.opengles.GL10;
 
 import static com.google.android.gms.plus.PlusOneDummyView.TAG;
@@ -25,9 +27,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Circle p1Eye,p2Eye;
     private BulletObject bulletObject;
     private int counter;
+    private ArrayList<Collision> collisions;
+    private CollisionEffect collisionEffect;
     public MyGLRenderer(Context context) {
         player1 = new Player(context, Player.PLAYER_ONE_START);
         player2 = new Player(context, Player.PLAYER_TWO_START);
+        collisions = new ArrayList<>();
     }
 
     public Player getPlayer1() {
@@ -57,12 +62,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         p2Eye = new Circle();
 
         bulletObject = new BulletObject();
+
+        collisionEffect = new CollisionEffect();
     }
 
     private float[] mRotationMatrix = new float[16];
 
     @Override
     public void onDrawFrame(GL10 unused) {
+        //Checks if bullets are out of bounds
         for(int i = player1.getBullets().size()-1;i>=0;i--){
             if(player1.getBullets().get(i).outOfBounds()){
                 player1.getBullets().remove(i);
@@ -73,6 +81,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 player2.getBullets().remove(i);
             }
         }
+
+
+
         float[] scratch = new float[16];
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
@@ -106,7 +117,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mSquare2.draw(mMVPMatrix2);
         mHat2.draw(mMVPMatrix2);
         counter++;
-        int counterInterval = 3;
+        int counterInterval = 1;
 
         if (player2.getxLoc() < player1.getxLoc()) {
             robe2.draw(mMVPMatrix2, Robe.RIGHT_ROBE);
@@ -126,17 +137,28 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             }
         }
         Log.v("bullets",player1.getBullets().size()+";"+player1.getBullets().size());
-      /*  for(Bullet b:player1.getBullets()){
-            bulletObject.draw(b.getMvpMatrix());
-        }
-        for(Bullet b:player2.getBullets()){
-            bulletObject.draw(b.getMvpMatrix());
-        }*/
-        bulletObject.draw(player1.getBullets());
-        bulletObject.draw(player2.getBullets());
+
+
         player1.moveBullets();
         player2.moveBullets();
+        //Collision detection with other bullets
+        for(int i = player1.getBullets().size()-1;i>=0;i--){
+            for(int j = player2.getBullets().size()-1;j>=0;j--){
+                if(player1.getBullets().size()>i&&player2.getBullets().size()>j) {
+                    if (player1.getBullets().get(i).collideDetect(player2.getBullets().get(j))) {
+                        //  Log.v("collide","p1:x:"+player1.getBullets().get(i).getxLoc()+";y:"+player1.getBullets().get(i).getyLoc()+"p2:x:"+player2.getBullets().get(i).getxLoc()+";y:"+player2.getBullets().get(i).getyLoc());
+//                        collisions.add(new Collision((player1.getBullets().get(i).getxLoc()+player2.getBullets().get(i).getxLoc())/2,(player1.getBullets().get(i).getyLoc()+player2.getBullets().get(i).getyLoc())/2,mProjectionMatrix,mViewMatrix));
+                        player1.getBullets().remove(i);
+                        player2.getBullets().remove(j);
 
+                    }
+                }
+            }
+        }
+        bulletObject.draw(player1.getBullets());
+        bulletObject.draw(player2.getBullets());
+        collisionEffect.draw(collisions);
+        collisions.removeAll(collisions);
         // Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
 
         // Combine the rotation matrix with the projection and camera view

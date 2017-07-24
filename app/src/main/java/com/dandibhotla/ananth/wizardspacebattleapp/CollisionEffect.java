@@ -10,10 +10,10 @@ import java.util.ArrayList;
 
 
 /**
- * Created by Ananth on 7/23/2017.
+ * Created by Ananth on 7/24/2017.
  */
 
-public class BulletObject {
+public class CollisionEffect {
 
     private final String vertexShaderCode =
             // This matrix member variable provides a hook to manipulate
@@ -34,7 +34,7 @@ public class BulletObject {
                     "  gl_FragColor = vColor;" +
                     "}";
 
-    private final FloatBuffer vertexBuffer,vertexBuffer2;
+    private final FloatBuffer vertexBuffer;
     private final ShortBuffer drawListBuffer;
     private final int mProgram;
     private int mPositionHandle;
@@ -47,49 +47,31 @@ public class BulletObject {
 
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
-    /*static float squareCoords[] = {
-            -0.1f, 0.1f, 0.0f,   // top left
-            -0.1f, -0.1f, 0.0f,   // bottom left
-            0.1f, -0.1f, 0.0f,   // bottom right
-            0.1f, 0.1f, 0.0f}; // top right*/
-    static float leftCoords[] = {
-            -0.12f, 0.01f, 0.0f,   // top left
-            -0.12f, -0.01f, 0.0f,   // bottom left
-            -0.1f, -0.01f, 0.0f,   // bottom right
-            -0.1f, 0.01f, 0.0f}; // top right
-    static float rightCoords[] = {
-            0.1f, 0.01f, 0.0f,   // top left
-            0.1f, -0.01f, 0.0f,   // bottom left
-            0.12f, -0.01f, 0.0f,   // bottom right
-            0.12f, 0.01f, 0.0f}; // top right
+    static float collisionCoords[] = {
+            -0.01f, 0.01f, 0.0f,   // top left
+            -0.01f, -0.01f, 0.0f,   // bottom left
+            0.01f, -0.01f, 0.0f,   // bottom right
+            0.01f, 0.01f, 0.0f}; // top right
+
     private final short drawOrder[] = {0, 1, 2, 0, 2, 3}; // order to draw vertices
 
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 
-   private final float colorP1[] = {0f, 0f, 1f, 0.1f};
-   private final float colorP2[] = {1f, 0f, 0f, 0.1f};
+    private final float color[] = {1f, 1f, 1f, 1.0f};
 
     /**
      * Sets up the drawing object data for use in an OpenGL ES context.
      */
-    public BulletObject() {
+    public CollisionEffect() {
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 // (# of coordinate values * 4 bytes per float)
-                leftCoords.length * 4);
+                collisionCoords.length * 4);
         bb.order(ByteOrder.nativeOrder());
         vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(leftCoords);
+        vertexBuffer.put(collisionCoords);
         vertexBuffer.position(0);
 
-
-        ByteBuffer bb2 = ByteBuffer.allocateDirect(
-                // (# of coordinate values * 4 bytes per float)
-                rightCoords.length * 4);
-        bb2.order(ByteOrder.nativeOrder());
-        vertexBuffer2 = bb2.asFloatBuffer();
-        vertexBuffer2.put(rightCoords);
-        vertexBuffer2.position(0);
 
         // initialize byte buffer for the draw list
         ByteBuffer dlb = ByteBuffer.allocateDirect(
@@ -116,8 +98,8 @@ public class BulletObject {
     }
 
 
-    public void draw(ArrayList<Bullet> bullets) {
-        for (Bullet b : bullets) {
+    public void draw(ArrayList<Collision> collisions) {
+        for (Collision b : collisions) {
             // Add program to OpenGL environment
             GLES20.glUseProgram(mProgram);
 
@@ -128,35 +110,21 @@ public class BulletObject {
             GLES20.glEnableVertexAttribArray(mPositionHandle);
 
             // Prepare the triangle coordinate data
-            if (b.getDirection().equals(Bullet.LEFT_FACING)) {
                 GLES20.glVertexAttribPointer(
                         mPositionHandle, COORDS_PER_VERTEX,
                         GLES20.GL_FLOAT, false,
                         vertexStride, vertexBuffer);
-            } else {
-                GLES20.glVertexAttribPointer(
-                        mPositionHandle, COORDS_PER_VERTEX,
-                        GLES20.GL_FLOAT, false,
-                        vertexStride, vertexBuffer2);
-            }
+
 
             // get handle to fragment shader's vColor member
             mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
-            GLES20.glDisable(GLES20.GL_CULL_FACE);
 
-// No depth testing
-            GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-
-// Enable blending
-            GLES20.glEnable(GLES20.GL_BLEND);
-            GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
             // Set color for drawing the triangle
-          //  Log.v("color",b.getColor());
-            if (b.getColor().equals(Player.COLOR_RED)) {
-                GLES20.glUniform4fv(mColorHandle, 1, colorP2, 0);
-            } else {
-                GLES20.glUniform4fv(mColorHandle, 1, colorP1, 0);
-            }
+            //  Log.v("color",b.getColor());
+
+                GLES20.glUniform4fv(mColorHandle, 1, color, 0);
+
+
             // get handle to shape's transformation matrix
             mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
             MyGLRenderer.checkGlError("glGetUniformLocation");
@@ -175,43 +143,5 @@ public class BulletObject {
         }
 
     }
-    public void draw(float[] mvpMatrix) {
-        // Add program to OpenGL environment
-        GLES20.glUseProgram(mProgram);
 
-        // get handle to vertex shader's vPosition member
-        mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
-
-        // Enable a handle to the triangle vertices
-        GLES20.glEnableVertexAttribArray(mPositionHandle);
-
-        // Prepare the triangle coordinate data
-        GLES20.glVertexAttribPointer(
-                mPositionHandle, COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT, false,
-                vertexStride, vertexBuffer);
-
-        // get handle to fragment shader's vColor member
-        mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
-
-        // Set color for drawing the triangle
-
-            GLES20.glUniform4fv(mColorHandle, 1, colorP2, 0);
-
-        // get handle to shape's transformation matrix
-        mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
-        MyGLRenderer.checkGlError("glGetUniformLocation");
-
-        // Apply the projection and view transformation
-        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
-        MyGLRenderer.checkGlError("glUniformMatrix4fv");
-
-        // Draw the square
-        GLES20.glDrawElements(
-                GLES20.GL_TRIANGLES, drawOrder.length,
-                GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
-
-        // Disable vertex array
-        GLES20.glDisableVertexAttribArray(mPositionHandle);
-    }
 }
