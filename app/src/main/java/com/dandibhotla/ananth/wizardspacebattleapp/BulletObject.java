@@ -66,8 +66,8 @@ public class BulletObject {
 
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 
-   private final float colorP1[] = {0f, 0f, 1f, 0.1f};
-   private final float colorP2[] = {1f, 0f, 0f, 0.1f};
+   private final float colorP1[] = {0f, 0f, 1f, 1f};
+   private final float colorP2[] = {1f, 0f, 0f, 1f};
 
     /**
      * Sets up the drawing object data for use in an OpenGL ES context.
@@ -152,10 +152,10 @@ public class BulletObject {
             GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
             // Set color for drawing the triangle
           //  Log.v("color",b.getColor());
-            if (b.getColor().equals(Player.COLOR_RED)) {
-                GLES20.glUniform4fv(mColorHandle, 1, colorP2, 0);
+            if (b.getColor().equals(Player.PLAYER_TWO)) {
+                GLES20.glUniform4fv(mColorHandle, 1, Player.colorP2, 0);
             } else {
-                GLES20.glUniform4fv(mColorHandle, 1, colorP1, 0);
+                GLES20.glUniform4fv(mColorHandle, 1, Player.colorP1, 0);
             }
             // get handle to shape's transformation matrix
             mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");

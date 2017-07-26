@@ -7,6 +7,7 @@ import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -19,17 +20,15 @@ import android.widget.TextView;
 public class GameScreen extends Activity {
     private VelocityTracker mVelocityTracker = null;
     private Point point1, point2;
-    private MyGLSurfaceView mGLView;
+    private static MyGLSurfaceView mGLView;
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
-    private float mPreviousX;
-    private float mPreviousY;
-    private float mPreviousX2;
-    private float mPreviousY2;
+    public static volatile double mPreviousX, mPreviousY, mPreviousX2, mPreviousY2;
     private Player player1, player2;
-    private int widthPixels, heightPixels;
-    private boolean p1TouchFirst;
+    private static double widthPixels, heightPixels;
+    public static boolean p1Touch, p2Touch;
     private TextView score1, score2;
-    private RelativeLayout leftLayout,rightLayout;
+    private static RelativeLayout leftLayout, rightLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +42,8 @@ public class GameScreen extends Activity {
 
         score1.setTextColor(Color.WHITE);
         score2.setTextColor(Color.WHITE);
-       leftLayout = (RelativeLayout)findViewById(R.id.leftRelativeLayout);
-       rightLayout = (RelativeLayout)findViewById(R.id.rightRelativeLayout);
+        leftLayout = (RelativeLayout) findViewById(R.id.leftRelativeLayout);
+        rightLayout = (RelativeLayout) findViewById(R.id.rightRelativeLayout);
         leftLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -58,6 +57,11 @@ public class GameScreen extends Activity {
                     case MotionEvent.ACTION_DOWN:
                         mPreviousX = x;
                         mPreviousY = y;
+                        p1Touch = true;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        p1Touch = false;
+                        break;
                 }
                 return true;
             }
@@ -76,12 +80,17 @@ public class GameScreen extends Activity {
                     case MotionEvent.ACTION_DOWN:
                         mPreviousX2 = x;
                         mPreviousY2 = y;
+                        p2Touch = true;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        p2Touch = false;
+                        break;
                 }
                 return true;
             }
         });
 
-        frame.addView(mGLView,0);
+        frame.addView(mGLView, 0);
 
         point1 = new Point();
         point2 = new Point();
@@ -91,13 +100,14 @@ public class GameScreen extends Activity {
         DisplayMetrics display = getResources().getDisplayMetrics();
         widthPixels = display.widthPixels;
         heightPixels = display.heightPixels;
+        Log.v("sizeD",widthPixels+";"+heightPixels);
+        mGLView.getHolder().setFixedSize((int)widthPixels,(int)heightPixels);
     }
-
 
 
     class MyGLSurfaceView extends GLSurfaceView {
 
-        private final MyGLRenderer mRenderer;
+        public final MyGLRenderer mRenderer;
 
         public float getScreenHeight() {
             return mRenderer.getScreenHeight();
@@ -121,8 +131,8 @@ public class GameScreen extends Activity {
             //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
             player1 = mRenderer.getPlayer1();
             player2 = mRenderer.getPlayer2();
-        }
 
+        }
 
 
     }
@@ -138,6 +148,44 @@ public class GameScreen extends Activity {
                             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
+    public static float getmPreviousXFloat() {
+        double distance = mPreviousX/widthPixels*widthPixels/heightPixels*2;
+        Log.v("joystick",mPreviousX+"");
+        return (float)(-distance + mGLView.getScreenWidth());
+    }
+
+    public static float getmPreviousYFloat() {
+        if(mPreviousY>heightPixels/2){
+            double distance = mPreviousY - heightPixels/2;
+            return -(float)(distance/(heightPixels/2));
+        }
+        else{
+            double distance = heightPixels/2 - mPreviousY;
+            return (float) (distance/(heightPixels/2));
+        }
+    }
+
+    public static float getmPreviousX2Float() {
+
+        double distance = (mPreviousX2)/(widthPixels/2)*-widthPixels/heightPixels;
+        double x2 = -mPreviousX2/widthPixels*widthPixels/heightPixels*2;
+        double distance2 = mPreviousX2/rightLayout.getWidth()*widthPixels/heightPixels;
+         Log.v("joystick",mPreviousX2+";"+widthPixels/heightPixels);
+       // Log.v("joystick",mPreviousX2/widthPixels*mGLView.getScreenWidth()*2+";");
+        return (float) -distance2;
+    }
+
+    public static float getmPreviousY2Float() {
+        if(mPreviousY2>heightPixels/2){
+            double distance = mPreviousY2 - heightPixels/2;
+            return -(float)(distance/(heightPixels/2));
+        }
+        else{
+            double distance = heightPixels/2 - mPreviousY2;
+            return (float) (distance/(heightPixels/2));
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.dandibhotla.ananth.wizardspacebattleapp;
 
 import android.opengl.GLES20;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -39,7 +40,7 @@ public class Square {
     private int mColorHandle;
     private int mMVPMatrixHandle;
 
-    private String color;
+    private String player;
 
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
@@ -59,7 +60,7 @@ public class Square {
     /**
      * Sets up the drawing object data for use in an OpenGL ES context.
      */
-    public Square(String color) {
+    public Square(String player) {
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 // (# of coordinate values * 4 bytes per float)
@@ -90,7 +91,7 @@ public class Square {
         GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
         GLES20.glAttachShader(mProgram, fragmentShader); // add the fragment shader to program
         GLES20.glLinkProgram(mProgram);// create OpenGL program executables
-        this.color = color;
+        this.player = player;
     }
 
     /**
@@ -118,11 +119,12 @@ public class Square {
         // get handle to fragment shader's vColor member
         mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
         GLES20.glDisable(GLES20.GL_BLEND);
-        // Set color for drawing the triangle
-        if (color.equals(Player.COLOR_RED)) {
-            GLES20.glUniform4fv(mColorHandle, 1, colorP2, 0);
+        // Set player for drawing the triangle
+        Log.v("player",player);
+        if (player.equals(Player.PLAYER_TWO)) {
+            GLES20.glUniform4fv(mColorHandle, 1, Player.colorP2, 0);
         } else {
-            GLES20.glUniform4fv(mColorHandle, 1, colorP1, 0);
+            GLES20.glUniform4fv(mColorHandle, 1, Player.colorP1, 0);
         }
         // get handle to shape's transformation matrix
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");

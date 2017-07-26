@@ -12,16 +12,17 @@ import java.util.ArrayList;
 public class Player {
     private volatile int xLoc, yLoc;
     private double width, height;
-    private final double MAX_POWER = 50;
-    public static final String PLAYER_ONE_START = "p1";
-    public static final String PLAYER_TWO_START = "p2";
+    private final double MAX_POWER = 100;
+    public static final String PLAYER_ONE = "p1";
+    public static final String PLAYER_TWO = "p2";
     private volatile int health;
     private volatile ArrayList<Bullet> bullets;
     public static final String COLOR_RED = "red";
     public static final String COLOR_BLUE = "blue";
     private Context context;
     private String playerType;
-
+   public static float colorP1[] = {0f, 0f, 1f, 1.0f};
+   public static float colorP2[] = {1f, 0f, 0f, 1f};
     public Player(Context context, String playerType) {
         DisplayMetrics display = context.getResources().getDisplayMetrics();
         int widthPixels = display.widthPixels;
@@ -29,10 +30,10 @@ public class Player {
         width = ((double) widthPixels) / heightPixels;
         height = ((double) heightPixels) / widthPixels;
         if (playerType.equals("p1")) {
-            xLoc = (int) (width * 1000);
+            xLoc = (int) (width * 1000)-100;
             yLoc = 0;
         } else {
-            xLoc = (int) (-width * 1000);
+            xLoc = (int) (-width * 1000)+100;
             yLoc = 0;
         }
         health = 100;
@@ -61,8 +62,8 @@ public class Player {
         }
         double xPower = (Math.cos(angle) * power);
         double yPower = (Math.sin(angle) * power);
-        xLoc -= (float) xPower;
-        yLoc -= (float) yPower;
+        xLoc -= (float) xPower / 2;
+        yLoc -= (float) yPower / 2;
 
         // Log.v("move", xLoc + "");
         // Log.v("move", xPower + "");
@@ -72,17 +73,20 @@ public class Player {
         //  Log.v("moveLoc","X:"+xLoc+"; Y:"+yLoc);
         xLoc += xMovement;
         yLoc += yMovement;
-        //    Log.v("moveLoc", "X:" + xLoc + "; Y:" + yLoc);
-        if (xLoc > width * 1000) {
-            xLoc = (int) (width * 1000);
-        } else if (xLoc < -width * 1000) {
-            xLoc = (int) (-width * 1000);
-        }
-        if (yLoc > height * 1000 + 100) {
+       // Log.v("moveLoc", "X:" + xLoc + "; Y:" + yLoc);
 
-            yLoc = (int) (height * 1000 + 100);
-        } else if (yLoc < -height * 1000 - 300) {
-            yLoc = (int) (-height * 1000 - 300);
+        if (xLoc > width * 1000-100) {
+            xLoc = (int) (width * 1000-100);
+        } else if (xLoc < -width * 1000+100) {
+            xLoc = (int) (-width * 1000+100);
+        }
+        // if (yLoc > height * 1000 + 100) {
+        if (yLoc > 900) {
+
+            yLoc = 900;
+            //  } else if (yLoc < -height * 1000 - 300) {
+        } else if (yLoc < -900) {
+            yLoc = -900;
         }
         //   Log.v("movement", "w:" + width + "; h:" + height);
 
@@ -90,10 +94,10 @@ public class Player {
 
     public void addBullet(String direction, float[] projM, float[] viewM) {
 
-        if (playerType.equals(PLAYER_ONE_START)) {
-            bullets.add(new Bullet(context, direction, COLOR_BLUE, xLoc, yLoc, projM, viewM));
+        if (playerType.equals(PLAYER_ONE)) {
+            bullets.add(new Bullet(context, direction, PLAYER_ONE, xLoc, yLoc, projM, viewM));
         } else {
-            bullets.add(new Bullet(context, direction, COLOR_RED, xLoc, yLoc, projM, viewM));
+            bullets.add(new Bullet(context, direction, PLAYER_TWO, xLoc, yLoc, projM, viewM));
         }
     }
 
