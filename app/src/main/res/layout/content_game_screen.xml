@@ -42,9 +42,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
-                android:text="P1 Score"
+                android:text="P1 Score:"
                 android:textColor="@color/colorAccent"
                 android:id="@+id/player1Score"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="P1 Health:"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/player1Health"
+                android:layout_below="@id/player1Score"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -58,10 +66,21 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:paddingRight="10dp"
-                android:text="P2 Score"
+                android:text="P2 Score:"
                 android:textAlignment="textEnd"
                 android:textColor="@color/colorAccent"
                 android:id="@+id/player2Score"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="P2 Health:"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/player2Health"
+                android:textAlignment="textEnd"
+                android:gravity="end"
+                android:paddingRight="10dp"
+                android:layout_below="@id/player2Score"/>
         </RelativeLayout>
     </LinearLayout>
 </FrameLayout>

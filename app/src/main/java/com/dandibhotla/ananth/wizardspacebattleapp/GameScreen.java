@@ -26,7 +26,7 @@ public class GameScreen extends Activity {
     private Player player1, player2;
     private static double widthPixels, heightPixels;
     public static boolean p1Touch, p2Touch;
-    private TextView score1, score2;
+    private TextView score1, score2, health1,health2;
     private static RelativeLayout leftLayout, rightLayout;
 
     @Override
@@ -37,11 +37,7 @@ public class GameScreen extends Activity {
         mGLView = new MyGLSurfaceView(this);
         setContentView(R.layout.content_game_screen);
         FrameLayout frame = (FrameLayout) findViewById(R.id.gameFrame);
-        score1 = (TextView) findViewById(R.id.player1Score);
-        score2 = (TextView) findViewById(R.id.player2Score);
 
-        score1.setTextColor(Color.WHITE);
-        score2.setTextColor(Color.WHITE);
         leftLayout = (RelativeLayout) findViewById(R.id.leftRelativeLayout);
         rightLayout = (RelativeLayout) findViewById(R.id.rightRelativeLayout);
         leftLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -100,8 +96,17 @@ public class GameScreen extends Activity {
         DisplayMetrics display = getResources().getDisplayMetrics();
         widthPixels = display.widthPixels;
         heightPixels = display.heightPixels;
-        Log.v("sizeD",widthPixels+";"+heightPixels);
-        mGLView.getHolder().setFixedSize((int)widthPixels,(int)heightPixels);
+        Log.v("sizeD", widthPixels + ";" + heightPixels);
+        mGLView.getHolder().setFixedSize((int) widthPixels, (int) heightPixels);
+        score1 = (TextView) findViewById(R.id.player1Score);
+        score2 = (TextView) findViewById(R.id.player2Score);
+        score1.setTextColor(Color.rgb((int)(Player.colorP1[0]*255),(int)(Player.colorP1[1]*255),(int)(Player.colorP1[2]*255)));
+        score2.setTextColor(Color.rgb((int)(Player.colorP2[0]*255),(int)(Player.colorP2[1]*255),(int)(Player.colorP2[2]*255)));
+
+        health1 = (TextView) findViewById(R.id.player1Health);
+        health2 = (TextView) findViewById(R.id.player2Health);
+        health1.setTextColor(Color.rgb((int)(Player.colorP1[0]*255),(int)(Player.colorP1[1]*255),(int)(Player.colorP1[2]*255)));
+        health2.setTextColor(Color.rgb((int)(Player.colorP2[0]*255),(int)(Player.colorP2[1]*255),(int)(Player.colorP2[2]*255)));
     }
 
 
@@ -115,6 +120,10 @@ public class GameScreen extends Activity {
 
         public float getScreenWidth() {
             return mRenderer.getScreenWidth();
+        }
+
+        public MyGLRenderer getRenderer() {
+            return mRenderer;
         }
 
         public MyGLSurfaceView(Context context) {
@@ -152,40 +161,38 @@ public class GameScreen extends Activity {
     }
 
     public static float getmPreviousXFloat() {
-        double distance = mPreviousX/widthPixels*widthPixels/heightPixels*2;
-        Log.v("joystick",mPreviousX+"");
-        return (float)(-distance + mGLView.getScreenWidth());
+        double distance = mPreviousX / widthPixels * widthPixels / heightPixels * 2;
+        Log.v("joystick", mPreviousX + "");
+        return (float) (-distance + mGLView.getScreenWidth());
     }
 
     public static float getmPreviousYFloat() {
-        if(mPreviousY>heightPixels/2){
-            double distance = mPreviousY - heightPixels/2;
-            return -(float)(distance/(heightPixels/2));
-        }
-        else{
-            double distance = heightPixels/2 - mPreviousY;
-            return (float) (distance/(heightPixels/2));
+        if (mPreviousY > heightPixels / 2) {
+            double distance = mPreviousY - heightPixels / 2;
+            return -(float) (distance / (heightPixels / 2));
+        } else {
+            double distance = heightPixels / 2 - mPreviousY;
+            return (float) (distance / (heightPixels / 2));
         }
     }
 
     public static float getmPreviousX2Float() {
 
-        double distance = (mPreviousX2)/(widthPixels/2)*-widthPixels/heightPixels;
-        double x2 = -mPreviousX2/widthPixels*widthPixels/heightPixels*2;
-        double distance2 = mPreviousX2/rightLayout.getWidth()*widthPixels/heightPixels;
-         Log.v("joystick",mPreviousX2+";"+widthPixels/heightPixels);
-       // Log.v("joystick",mPreviousX2/widthPixels*mGLView.getScreenWidth()*2+";");
+        double distance = (mPreviousX2) / (widthPixels / 2) * -widthPixels / heightPixels;
+        double x2 = -mPreviousX2 / widthPixels * widthPixels / heightPixels * 2;
+        double distance2 = mPreviousX2 / rightLayout.getWidth() * widthPixels / heightPixels;
+        Log.v("joystick", mPreviousX2 + ";" + widthPixels / heightPixels);
+        // Log.v("joystick",mPreviousX2/widthPixels*mGLView.getScreenWidth()*2+";");
         return (float) -distance2;
     }
 
     public static float getmPreviousY2Float() {
-        if(mPreviousY2>heightPixels/2){
-            double distance = mPreviousY2 - heightPixels/2;
-            return -(float)(distance/(heightPixels/2));
-        }
-        else{
-            double distance = heightPixels/2 - mPreviousY2;
-            return (float) (distance/(heightPixels/2));
+        if (mPreviousY2 > heightPixels / 2) {
+            double distance = mPreviousY2 - heightPixels / 2;
+            return -(float) (distance / (heightPixels / 2));
+        } else {
+            double distance = heightPixels / 2 - mPreviousY2;
+            return (float) (distance / (heightPixels / 2));
         }
     }
 }
