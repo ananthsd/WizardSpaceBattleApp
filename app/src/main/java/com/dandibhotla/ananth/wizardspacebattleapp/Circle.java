@@ -243,8 +243,8 @@ public class Circle {
                 }
             }*/
 
-            Log.v("color", color[0] + "," + color[1] + "," + color[2] + "," + color[3]);
-            Log.v("colorStart", colorStart[0] + "," + colorStart[1] + "," + colorStart[2] + "," + colorStart[3]);
+           // Log.v("color", color[0] + "," + color[1] + "," + color[2] + "," + color[3]);
+           // Log.v("colorStart", colorStart[0] + "," + colorStart[1] + "," + colorStart[2] + "," + colorStart[3]);
         }
         // get handle to fragment shader's vColor member
         mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");

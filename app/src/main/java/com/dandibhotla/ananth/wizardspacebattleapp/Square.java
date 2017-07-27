@@ -120,7 +120,7 @@ public class Square {
         mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
         GLES20.glDisable(GLES20.GL_BLEND);
         // Set player for drawing the triangle
-        Log.v("player",player);
+        //Log.v("player",player);
         if (player.equals(Player.PLAYER_TWO)) {
             GLES20.glUniform4fv(mColorHandle, 1, Player.colorP2, 0);
         } else {

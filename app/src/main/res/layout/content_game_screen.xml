@@ -42,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
-                android:text="P1 Score:"
+                android:text="P1 Score: 0"
                 android:textColor="@color/colorAccent"
                 android:id="@+id/player1Score"/>
             <TextView
@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:paddingRight="10dp"
-                android:text="P2 Score:"
+                android:text="P2 Score: 0"
                 android:textAlignment="textEnd"
                 android:textColor="@color/colorAccent"
                 android:id="@+id/player2Score"/>

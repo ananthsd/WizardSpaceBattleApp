@@ -2,6 +2,8 @@ package com.dandibhotla.ananth.wizardspacebattleapp;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -15,32 +17,66 @@ public class Player {
     private final double MAX_POWER = 100;
     public static final String PLAYER_ONE = "p1";
     public static final String PLAYER_TWO = "p2";
-    private volatile int health;
+    private volatile int health, score;
     private volatile ArrayList<Bullet> bullets;
     public static final String COLOR_RED = "red";
     public static final String COLOR_BLUE = "blue";
     private Context context;
     private String playerType;
-   public static float colorP1[] = {0f, 0f, 1f, 1.0f};
-   public static float colorP2[] = {1f, 0f, 0f, 1f};
-    public Player(Context context, String playerType) {
+    private final int damageIncrement = 5;
+
+    public TextView getScoreView() {
+        return scoreView;
+    }
+
+    public TextView getHealthView() {
+        return healthView;
+    }
+
+    public void increaseScore() {
+        score++;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    private TextView scoreView, healthView;
+    public static float colorP1[] = {0f, 0f, 1f, 1.0f};
+    public static float colorP2[] = {1f, 0f, 0f, 1f};
+
+    public Player(Context context, String playerType, TextView scoreView, TextView healthView) {
         DisplayMetrics display = context.getResources().getDisplayMetrics();
         int widthPixels = display.widthPixels;
         int heightPixels = display.heightPixels;
         width = ((double) widthPixels) / heightPixels;
         height = ((double) heightPixels) / widthPixels;
         if (playerType.equals("p1")) {
-            xLoc = (int) (width * 1000)-100;
+            xLoc = (int) (width * 1000) - 100;
             yLoc = 0;
         } else {
-            xLoc = (int) (-width * 1000)+100;
+            xLoc = (int) (-width * 1000) + 100;
             yLoc = 0;
         }
-        health = 100;
+        health = 1000;
         bullets = new ArrayList<>();
         this.context = context;
         this.playerType = playerType;
+        this.scoreView = scoreView;
+        this.healthView = healthView;
         //  Log.v("player", "w:" + width + "; h:" + height);
+    }
+    public void reset(){
+        if (playerType.equals("p1")) {
+            xLoc = (int) (width * 1000) - 100;
+            yLoc = 0;
+        } else {
+            xLoc = (int) (-width * 1000) + 100;
+            yLoc = 0;
+        }
+        health=1000;
+        bullets.removeAll(bullets);
+
     }
 
     public float getxLoc() {
@@ -73,12 +109,12 @@ public class Player {
         //  Log.v("moveLoc","X:"+xLoc+"; Y:"+yLoc);
         xLoc += xMovement;
         yLoc += yMovement;
-       // Log.v("moveLoc", "X:" + xLoc + "; Y:" + yLoc);
+        // Log.v("moveLoc", "X:" + xLoc + "; Y:" + yLoc);
 
-        if (xLoc > width * 1000-100) {
-            xLoc = (int) (width * 1000-100);
-        } else if (xLoc < -width * 1000+100) {
-            xLoc = (int) (-width * 1000+100);
+        if (xLoc > width * 1000 - 100) {
+            xLoc = (int) (width * 1000 - 100);
+        } else if (xLoc < -width * 1000 + 100) {
+            xLoc = (int) (-width * 1000 + 100);
         }
         // if (yLoc > height * 1000 + 100) {
         if (yLoc > 900) {
@@ -105,5 +141,36 @@ public class Player {
         for (Bullet b : bullets) {
             b.move();
         }
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    /*
+        * static float squareCoords[] = {
+                -0.1f, 0.1f, 0.0f,   // top left
+                -0.1f, -0.1f, 0.0f,   // bottom left
+                0.1f, -0.1f, 0.0f,   // bottom right
+                0.1f, 0.1f, 0.0f}; // top right
+
+                static float rightCoords[] = {
+                0.1f, 0.01f, 0.0f,   // top left
+                0.1f, -0.01f, 0.0f,   // bottom left
+                0.15f, -0.01f, 0.0f,   // bottom right
+                0.15f, 0.01f, 0.0f}; // top right
+        * */
+
+    public boolean collideDetect(Bullet b) {
+
+        if (Math.abs(b.getxLoc() - getxLoc()) < 0.15f && Math.abs(b.getyLoc() - getyLoc()) < 0.12f) {
+            Log.v("damage", "hit");
+            return true;
+        }
+        return false;
+    }
+
+    public void damage() {
+        health -= damageIncrement;
     }
 }

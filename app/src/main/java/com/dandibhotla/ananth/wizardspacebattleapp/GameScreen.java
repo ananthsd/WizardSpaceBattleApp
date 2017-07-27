@@ -23,10 +23,27 @@ public class GameScreen extends Activity {
     private static MyGLSurfaceView mGLView;
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
     public static volatile double mPreviousX, mPreviousY, mPreviousX2, mPreviousY2;
-    private Player player1, player2;
+    private static Player player1, player2;
     private static double widthPixels, heightPixels;
     public static boolean p1Touch, p2Touch;
-    private TextView score1, score2, health1,health2;
+
+    public static void updateScore1() {
+        score1.setText("P1 Score: " + player1.getScore());
+    }
+
+    public static void updateScore2() {
+        score2.setText("P2 Score: " + player2.getScore());
+    }
+
+    public static void updateHealth() {
+        if (health1 != null && health2 != null) {
+            health1.setText("P1 Health: " + player1.getHealth());
+            health2.setText("P2 Health: " + player2.getHealth());
+        }
+    }
+
+
+    private static TextView score1, score2, health1, health2;
     private static RelativeLayout leftLayout, rightLayout;
 
     @Override
@@ -36,6 +53,10 @@ public class GameScreen extends Activity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mGLView = new MyGLSurfaceView(this);
         setContentView(R.layout.content_game_screen);
+        score1 = (TextView) findViewById(R.id.player1Score);
+        score2 = (TextView) findViewById(R.id.player2Score);
+        health1 = (TextView) findViewById(R.id.player1Health);
+        health2 = (TextView) findViewById(R.id.player2Health);
         FrameLayout frame = (FrameLayout) findViewById(R.id.gameFrame);
 
         leftLayout = (RelativeLayout) findViewById(R.id.leftRelativeLayout);
@@ -96,17 +117,18 @@ public class GameScreen extends Activity {
         DisplayMetrics display = getResources().getDisplayMetrics();
         widthPixels = display.widthPixels;
         heightPixels = display.heightPixels;
-        Log.v("sizeD", widthPixels + ";" + heightPixels);
+        // Log.v("sizeD", widthPixels + ";" + heightPixels);
         mGLView.getHolder().setFixedSize((int) widthPixels, (int) heightPixels);
-        score1 = (TextView) findViewById(R.id.player1Score);
-        score2 = (TextView) findViewById(R.id.player2Score);
-        score1.setTextColor(Color.rgb((int)(Player.colorP1[0]*255),(int)(Player.colorP1[1]*255),(int)(Player.colorP1[2]*255)));
-        score2.setTextColor(Color.rgb((int)(Player.colorP2[0]*255),(int)(Player.colorP2[1]*255),(int)(Player.colorP2[2]*255)));
 
-        health1 = (TextView) findViewById(R.id.player1Health);
-        health2 = (TextView) findViewById(R.id.player2Health);
-        health1.setTextColor(Color.rgb((int)(Player.colorP1[0]*255),(int)(Player.colorP1[1]*255),(int)(Player.colorP1[2]*255)));
-        health2.setTextColor(Color.rgb((int)(Player.colorP2[0]*255),(int)(Player.colorP2[1]*255),(int)(Player.colorP2[2]*255)));
+        score1.setTextColor(Color.rgb((int) (Player.colorP1[0] * 255), (int) (Player.colorP1[1] * 255), (int) (Player.colorP1[2] * 255)));
+        score2.setTextColor(Color.rgb((int) (Player.colorP2[0] * 255), (int) (Player.colorP2[1] * 255), (int) (Player.colorP2[2] * 255)));
+
+
+        health1.setTextColor(Color.rgb((int) (Player.colorP1[0] * 255), (int) (Player.colorP1[1] * 255), (int) (Player.colorP1[2] * 255)));
+        health2.setTextColor(Color.rgb((int) (Player.colorP2[0] * 255), (int) (Player.colorP2[1] * 255), (int) (Player.colorP2[2] * 255)));
+        health1.setText("P1 Health: " + player1.getHealth());
+        health2.setText("P2 Health: " + player2.getHealth());
+
     }
 
 
@@ -132,7 +154,7 @@ public class GameScreen extends Activity {
             // Create an OpenGL ES 2.0 context
             setEGLContextClientVersion(2);
 
-            mRenderer = new MyGLRenderer(context);
+            mRenderer = new MyGLRenderer(context, score1, score2, health1, health2);
 
             // Set the Renderer for drawing on the GLSurfaceView
 
@@ -162,7 +184,7 @@ public class GameScreen extends Activity {
 
     public static float getmPreviousXFloat() {
         double distance = mPreviousX / widthPixels * widthPixels / heightPixels * 2;
-        Log.v("joystick", mPreviousX + "");
+        //Log.v("joystick", mPreviousX + "");
         return (float) (-distance + mGLView.getScreenWidth());
     }
 
@@ -181,7 +203,7 @@ public class GameScreen extends Activity {
         double distance = (mPreviousX2) / (widthPixels / 2) * -widthPixels / heightPixels;
         double x2 = -mPreviousX2 / widthPixels * widthPixels / heightPixels * 2;
         double distance2 = mPreviousX2 / rightLayout.getWidth() * widthPixels / heightPixels;
-        Log.v("joystick", mPreviousX2 + ";" + widthPixels / heightPixels);
+        //Log.v("joystick", mPreviousX2 + ";" + widthPixels / heightPixels);
         // Log.v("joystick",mPreviousX2/widthPixels*mGLView.getScreenWidth()*2+";");
         return (float) -distance2;
     }
@@ -195,4 +217,5 @@ public class GameScreen extends Activity {
             return (float) (distance / (heightPixels / 2));
         }
     }
+
 }
