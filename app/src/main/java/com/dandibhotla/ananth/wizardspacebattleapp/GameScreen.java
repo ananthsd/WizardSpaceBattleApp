@@ -7,7 +7,6 @@ import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -120,12 +119,17 @@ public class GameScreen extends Activity {
         // Log.v("sizeD", widthPixels + ";" + heightPixels);
         mGLView.getHolder().setFixedSize((int) widthPixels, (int) heightPixels);
 
-        score1.setTextColor(Color.rgb((int) (Player.colorP1[0] * 255), (int) (Player.colorP1[1] * 255), (int) (Player.colorP1[2] * 255)));
+       /* score1.setTextColor(Color.rgb((int) (Player.colorP1[0] * 255), (int) (Player.colorP1[1] * 255), (int) (Player.colorP1[2] * 255)));
         score2.setTextColor(Color.rgb((int) (Player.colorP2[0] * 255), (int) (Player.colorP2[1] * 255), (int) (Player.colorP2[2] * 255)));
 
-
         health1.setTextColor(Color.rgb((int) (Player.colorP1[0] * 255), (int) (Player.colorP1[1] * 255), (int) (Player.colorP1[2] * 255)));
-        health2.setTextColor(Color.rgb((int) (Player.colorP2[0] * 255), (int) (Player.colorP2[1] * 255), (int) (Player.colorP2[2] * 255)));
+        health2.setTextColor(Color.rgb((int) (Player.colorP2[0] * 255), (int) (Player.colorP2[1] * 255), (int) (Player.colorP2[2] * 255)));*/
+        score1.setTextColor(Color.WHITE);
+        score2.setTextColor(Color.WHITE);
+
+        health1.setTextColor(Color.WHITE);
+        health2.setTextColor(Color.WHITE);
+
         health1.setText("P1 Health: " + player1.getHealth());
         health2.setText("P2 Health: " + player2.getHealth());
 

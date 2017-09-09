@@ -44,6 +44,7 @@ public class Player {
     private TextView scoreView, healthView;
     public static float colorP1[] = {0f, 0f, 1f, 1.0f};
     public static float colorP2[] = {1f, 0f, 0f, 1f};
+    public static float colorBG[] = {0f, 0f, 0f, 1f};
 
     public Player(Context context, String playerType, TextView scoreView, TextView healthView) {
         DisplayMetrics display = context.getResources().getDisplayMetrics();

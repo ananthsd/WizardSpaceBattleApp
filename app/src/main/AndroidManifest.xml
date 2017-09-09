@@ -25,6 +25,13 @@
             android:label="@string/title_activity_game_screen"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="landscape"></activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_game_screen"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="landscape"></activity>
+        <meta-data android:name="com.google.android.gms.games.APP_ID"
+            android:value="@string/app_id" />
     </application>
 
 </manifest>
