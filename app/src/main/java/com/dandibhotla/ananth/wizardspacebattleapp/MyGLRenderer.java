@@ -52,7 +52,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 unused, javax.microedition.khronos.egl.EGLConfig config) {
         // Set the background frame color
         //  GLES20.glClearColor(0.25f, 0.93f, 0.36f, 1.0f);
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glClearColor(Player.colorBG[0], Player.colorBG[1], Player.colorBG[2], 1.0f);
+
         // initialize a triangle
         mHat = new Hat();
         robe = new Robe();

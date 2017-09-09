@@ -1,8 +1,11 @@
 package com.dandibhotla.ananth.wizardspacebattleapp;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -12,25 +15,66 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class MainMenu extends AppCompatActivity {
+import com.google.firebase.analytics.FirebaseAnalytics;
+
+public class MainMenu extends Activity {
     private RelativeLayout menuLayout;
-    private ImageView playButton;
+    private ImageView playButton,settingsButton;
     private Animation animation;
     private TextView title;
-
+    private FirebaseAnalytics mFirebaseAnalytics;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        SharedPreferences sharedPref = getSharedPreferences("Settings",Context.MODE_PRIVATE);
+        if(sharedPref.getBoolean("musicToggle",true)) {
+            Intent svc = new Intent(this, BackgroundSoundService.class);
+            startService(svc);
+        }
         setContentView(R.layout.main_menu);
-
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         init();
         initTitle();
+
+
+
+        int colorP1 = sharedPref.getInt("colorP1",Color.BLUE);
+        int colorP2 = sharedPref.getInt("colorP2",Color.RED);
+        int colorBG = sharedPref.getInt("colorBG",Color.BLACK);
+        Player.colorP1[0]= ((float) Color.red(colorP1))/255;
+        Player.colorP1[1]= ((float) Color.green(colorP1))/255;
+        Player.colorP1[2]= ((float) Color.blue(colorP1))/255;
+
+        Player.colorP2[0]= ((float) Color.red(colorP2))/255;
+        Player.colorP2[1]= ((float) Color.green(colorP2))/255;
+        Player.colorP2[2]= ((float) Color.blue(colorP2))/255;
+
+        Player.colorBG[0]= ((float) Color.red(colorBG))/255;
+        Player.colorBG[1]= ((float) Color.green(colorBG))/255;
+        Player.colorBG[2]= ((float) Color.blue(colorBG))/255;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(BackgroundSoundService.player!=null){
+            BackgroundSoundService.player.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(BackgroundSoundService.player!=null){
+            BackgroundSoundService.player.start();
+        }
     }
 
     private void init() {
         playButton = (ImageView) findViewById(R.id.play_image);
+        settingsButton = (ImageView) findViewById(R.id.settings_image);
         animation = AnimationUtils.loadAnimation(MainMenu.this, R.anim.play_button_anim);
         animation.setDuration(500);
         animation.setAnimationListener(new Animation.AnimationListener() {
@@ -44,6 +88,11 @@ public class MainMenu extends AppCompatActivity {
                 playButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        /*Bundle bundle = new Bundle();
+                        bundle.putString(FirebaseAnalytics.Param., id);
+                        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);
+                        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
+                        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);*/
                         Intent intent = new Intent(MainMenu.this, GameScreen.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         startActivity(intent);
@@ -57,6 +106,39 @@ public class MainMenu extends AppCompatActivity {
             }
         });
         playButton.startAnimation(animation);
+
+
+        animation = AnimationUtils.loadAnimation(MainMenu.this, R.anim.play_button_anim);
+        animation.setDuration(600);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                settingsButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        /*Bundle bundle = new Bundle();
+                        bundle.putString(FirebaseAnalytics.Param., id);
+                        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);
+                        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
+                        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);*/
+                        Intent intent = new Intent(MainMenu.this, SettingsActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
+                    }
+                });
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        settingsButton.startAnimation(animation);
     }
 
     private void initTitle() {
