@@ -143,6 +143,13 @@ public class SettingsActivity extends Activity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("colorP1", color);
                 editor.commit();
+                p1Color.setBackgroundColor(sharedPref.getInt("colorP1",Color.BLUE));
+                if(0.2126 * colorP1[0] + 0.7152 * colorP1[1] + 0.0722 * colorP1[2]>0.179){
+                    p1Color.setTextColor(Color.BLACK);
+                }
+                else{
+                    p1Color.setTextColor(Color.WHITE);
+                }
                 p1ColorPicker.hide();
             }
         });
@@ -157,6 +164,13 @@ public class SettingsActivity extends Activity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("colorP2", color);
                 editor.commit();
+                p2Color.setBackgroundColor(sharedPref.getInt("colorP2",Color.RED));
+                if(0.2126 * colorP2[0] + 0.7152 * colorP2[1] + 0.0722 * colorP2[2]>0.179){
+                    p2Color.setTextColor(Color.BLACK);
+                }
+                else{
+                    p2Color.setTextColor(Color.WHITE);
+                }
                 p2ColorPicker.hide();
             }
         });
@@ -174,6 +188,13 @@ public class SettingsActivity extends Activity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("colorBG", color);
                 editor.commit();
+                bgColor.setBackgroundColor(sharedPref.getInt("colorBG",Color.BLACK));
+                if(0.2126 * colorBG[0] + 0.7152 * colorBG[1] + 0.0722 * colorBG[2]>0.179){
+                    bgColor.setTextColor(Color.BLACK);
+                }
+                else{
+                    bgColor.setTextColor(Color.WHITE);
+                }
                 bgColorPicker.hide();
             }
         });
