@@ -2,6 +2,7 @@ package com.dandibhotla.ananth.wizardspacebattleapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.opengl.GLSurfaceView;
@@ -73,8 +74,8 @@ public class SettingsActivity extends Activity {
         settingsList = new ArrayList<>();
         settingsList.add("Colors");
         settingsList.add("Music");
-       // settingsList.add("Colors");
-       // settingsList.add("Colors");
+        // settingsList.add("Colors");
+        // settingsList.add("Colors");
         settingsRecyclerView = (RecyclerView) findViewById(R.id.settings_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         settingsRecyclerView.setLayoutManager(layoutManager);
@@ -87,11 +88,11 @@ public class SettingsActivity extends Activity {
         p1Color = (Button) infoLayout.findViewById(R.id.p1ColorButton);
         p2Color = (Button) infoLayout.findViewById(R.id.p2ColorButton);
         bgColor = (Button) infoLayout.findViewById(R.id.bgColorButton);
-        SharedPreferences sharedPref = getSharedPreferences("Settings",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
 
-        p1Color.setBackgroundColor(sharedPref.getInt("colorP1",Color.BLUE));
-        p2Color.setBackgroundColor(sharedPref.getInt("colorP2",Color.RED));
-        bgColor.setBackgroundColor(sharedPref.getInt("colorBG",Color.BLACK));
+        p1Color.setBackgroundColor(sharedPref.getInt("colorP1", Color.BLUE));
+        p2Color.setBackgroundColor(sharedPref.getInt("colorP2", Color.RED));
+        bgColor.setBackgroundColor(sharedPref.getInt("colorBG", Color.BLACK));
 
         p1ColorPicker = new ColorPicker(SettingsActivity.this, (int) (colorP1[0] * 255), (int) (colorP1[1] * 255), (int) (colorP1[2] * 255));
         p2ColorPicker = new ColorPicker(SettingsActivity.this, (int) (colorP2[0] * 255), (int) (colorP2[1] * 255), (int) (colorP2[2] * 255));
@@ -114,22 +115,19 @@ public class SettingsActivity extends Activity {
                 bgColorPicker.show();
             }
         });
-        if(0.2126 * colorP1[0] + 0.7152 * colorP1[1] + 0.0722 * colorP1[2]>0.179){
+        if (0.2126 * colorP1[0] + 0.7152 * colorP1[1] + 0.0722 * colorP1[2] > 0.179) {
             p1Color.setTextColor(Color.BLACK);
-        }
-        else{
+        } else {
             p1Color.setTextColor(Color.WHITE);
         }
-        if(0.2126 * colorP2[0] + 0.7152 * colorP2[1] + 0.0722 * colorP2[2]>0.179){
+        if (0.2126 * colorP2[0] + 0.7152 * colorP2[1] + 0.0722 * colorP2[2] > 0.179) {
             p2Color.setTextColor(Color.BLACK);
-        }
-        else{
+        } else {
             p2Color.setTextColor(Color.WHITE);
         }
-        if(0.2126 * colorBG[0] + 0.7152 * colorBG[1] + 0.0722 * colorBG[2]>0.179){
+        if (0.2126 * colorBG[0] + 0.7152 * colorBG[1] + 0.0722 * colorBG[2] > 0.179) {
             bgColor.setTextColor(Color.BLACK);
-        }
-        else{
+        } else {
             bgColor.setTextColor(Color.WHITE);
         }
         p1ColorPicker.setCallback(new ColorPickerCallback() {
@@ -143,11 +141,10 @@ public class SettingsActivity extends Activity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("colorP1", color);
                 editor.commit();
-                p1Color.setBackgroundColor(sharedPref.getInt("colorP1",Color.BLUE));
-                if(0.2126 * colorP1[0] + 0.7152 * colorP1[1] + 0.0722 * colorP1[2]>0.179){
+                p1Color.setBackgroundColor(sharedPref.getInt("colorP1", Color.BLUE));
+                if (0.2126 * colorP1[0] + 0.7152 * colorP1[1] + 0.0722 * colorP1[2] > 0.179) {
                     p1Color.setTextColor(Color.BLACK);
-                }
-                else{
+                } else {
                     p1Color.setTextColor(Color.WHITE);
                 }
                 p1ColorPicker.hide();
@@ -164,11 +161,10 @@ public class SettingsActivity extends Activity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("colorP2", color);
                 editor.commit();
-                p2Color.setBackgroundColor(sharedPref.getInt("colorP2",Color.RED));
-                if(0.2126 * colorP2[0] + 0.7152 * colorP2[1] + 0.0722 * colorP2[2]>0.179){
+                p2Color.setBackgroundColor(sharedPref.getInt("colorP2", Color.RED));
+                if (0.2126 * colorP2[0] + 0.7152 * colorP2[1] + 0.0722 * colorP2[2] > 0.179) {
                     p2Color.setTextColor(Color.BLACK);
-                }
-                else{
+                } else {
                     p2Color.setTextColor(Color.WHITE);
                 }
                 p2ColorPicker.hide();
@@ -188,11 +184,10 @@ public class SettingsActivity extends Activity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("colorBG", color);
                 editor.commit();
-                bgColor.setBackgroundColor(sharedPref.getInt("colorBG",Color.BLACK));
-                if(0.2126 * colorBG[0] + 0.7152 * colorBG[1] + 0.0722 * colorBG[2]>0.179){
+                bgColor.setBackgroundColor(sharedPref.getInt("colorBG", Color.BLACK));
+                if (0.2126 * colorBG[0] + 0.7152 * colorBG[1] + 0.0722 * colorBG[2] > 0.179) {
                     bgColor.setTextColor(Color.BLACK);
-                }
-                else{
+                } else {
                     bgColor.setTextColor(Color.WHITE);
                 }
                 bgColorPicker.hide();
@@ -201,7 +196,7 @@ public class SettingsActivity extends Activity {
 
         toggleMusic = (CheckBox) findViewById(R.id.checkMusicBox);
 
-        toggleMusic.setChecked(sharedPref.getBoolean("musicToggle",true));
+        toggleMusic.setChecked(sharedPref.getBoolean("musicToggle", true));
         toggleMusic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -209,10 +204,16 @@ public class SettingsActivity extends Activity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean("musicToggle", isChecked);
                 editor.commit();
-                if(isChecked) {
-                    BackgroundSoundService.player.start();
-                }
-                else{
+
+                if (isChecked) {
+              if(BackgroundSoundService.player==null){
+                  Intent svc = new Intent(getApplicationContext(), BackgroundSoundService.class);
+                  startService(svc);
+              }else {
+                  BackgroundSoundService.player.start();
+              }
+
+                } else {
                     BackgroundSoundService.player.pause();
                 }
             }
@@ -221,8 +222,8 @@ public class SettingsActivity extends Activity {
         volumeBar.setTrackColor(Color.BLUE);
         volumeBar.setScrubberColor(Color.BLUE);
         volumeBar.setThumbColor(Color.BLUE, Color.BLUE);
-        volumeBar.setProgress(sharedPref.getInt("musicVolume",80));
-        volumeButton = (Button)findViewById(R.id.setVolumeButton);
+        volumeBar.setProgress(sharedPref.getInt("musicVolume", 80));
+        volumeButton = (Button) findViewById(R.id.setVolumeButton);
         volumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -230,6 +231,7 @@ public class SettingsActivity extends Activity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("musicVolume", volumeBar.getProgress());
                 editor.commit();
+
                 BackgroundSoundService.setVolume(volumeBar.getProgress());
             }
         });
@@ -239,7 +241,8 @@ public class SettingsActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (BackgroundSoundService.player != null) {
+        SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        if (BackgroundSoundService.player != null&&sharedPref.getBoolean("musicToggle", true)) {
             BackgroundSoundService.player.pause();
         }
     }
@@ -247,7 +250,8 @@ public class SettingsActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (BackgroundSoundService.player != null) {
+        SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        if (BackgroundSoundService.player != null&&sharedPref.getBoolean("musicToggle", true)) {
             BackgroundSoundService.player.start();
         }
     }

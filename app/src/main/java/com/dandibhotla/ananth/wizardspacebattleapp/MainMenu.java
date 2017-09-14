@@ -59,7 +59,8 @@ public class MainMenu extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        if(BackgroundSoundService.player!=null){
+        SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        if (BackgroundSoundService.player != null&&sharedPref.getBoolean("musicToggle", true)) {
             BackgroundSoundService.player.pause();
         }
     }
@@ -67,7 +68,8 @@ public class MainMenu extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(BackgroundSoundService.player!=null){
+        SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        if (BackgroundSoundService.player != null&&sharedPref.getBoolean("musicToggle", true)) {
             BackgroundSoundService.player.start();
         }
     }

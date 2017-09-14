@@ -2,6 +2,7 @@ package com.dandibhotla.ananth.wizardspacebattleapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.opengl.GLSurfaceView;
@@ -28,7 +29,8 @@ public class GameScreen extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        if(BackgroundSoundService.player!=null){
+        SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        if (BackgroundSoundService.player != null&&sharedPref.getBoolean("musicToggle", true)) {
             BackgroundSoundService.player.pause();
         }
     }
@@ -36,7 +38,8 @@ public class GameScreen extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(BackgroundSoundService.player!=null){
+        SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        if (BackgroundSoundService.player != null&&sharedPref.getBoolean("musicToggle", true)) {
             BackgroundSoundService.player.start();
         }
     }

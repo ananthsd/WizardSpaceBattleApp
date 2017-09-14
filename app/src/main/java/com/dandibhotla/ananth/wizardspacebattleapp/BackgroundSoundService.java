@@ -15,6 +15,7 @@ import android.util.Log;
 public class BackgroundSoundService extends Service {
     private static final String TAG = null;
     public static MediaPlayer player;
+    public static boolean isPrepared = false;
     public IBinder onBind(Intent arg0) {
 
         return null;
@@ -25,13 +26,15 @@ public class BackgroundSoundService extends Service {
         player = MediaPlayer.create(this, R.raw.space_waltz);
         player.setLooping(true); // Set looping
         SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
-        int maxVolume = 100;
-        float log1=(float)(Math.log(maxVolume-sharedPref.getInt("musicVolume",80))/Math.log(maxVolume));
-        player.setVolume(1-log1,1-log1);
+        player.setVolume(sharedPref.getInt("musicVolume",80)/(100f),sharedPref.getInt("musicVolume",80)/(100f));
 
     }
     public int onStartCommand(Intent intent, int flags, int startId) {
-        player.start();
+        SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+
+            player.start();
+
+
         return Service.START_NOT_STICKY;
     }
 
@@ -54,8 +57,8 @@ public class BackgroundSoundService extends Service {
     }
     public static void setVolume(int volume){
         int maxVolume = 100;
-        float log1=(float)(Math.log(maxVolume-volume)/Math.log(maxVolume));
-        player.setVolume(1-log1,1-log1);
+        player.setVolume(volume/(100f),volume/(100f));
+
     }
     @Override
     public void onDestroy() {
