@@ -24,7 +24,8 @@ public class Player {
     private Context context;
     private String playerType;
     private final int damageIncrement = 5;
-
+    private double angle, power;
+    public static final String LEFT_FACING = "left", RIGHT_FACING = "right";
     public TextView getScoreView() {
         return scoreView;
     }
@@ -87,12 +88,21 @@ public class Player {
     public float getyLoc() {
         return (float) yLoc / 1000;
     }
+    public int getxLocPx() {
+        return xLoc;
+    }
 
+    public int getyLocPx() {
+        return yLoc;
+    }
     public ArrayList<Bullet> getBullets() {
         return bullets;
     }
-
-    public void move(double angle, double power) {
+    public void setMoveValues(double angle, double power){
+        this.angle=angle;
+        this.power=power;
+    }
+    public void move() {
         //   Log.v("move","Angle:"+angle+"; Power:"+power);
         if (power > MAX_POWER) {
             power = MAX_POWER;
@@ -107,7 +117,15 @@ public class Player {
 
         double xMovement = 0.01f / ((MAX_POWER)) * xPower * 1000;
         double yMovement = 0.01f / ((MAX_POWER)) * yPower * 1000;
-        //  Log.v("moveLoc","X:"+xLoc+"; Y:"+yLoc);
+       // xMovement*=100;
+        //yMovement*=100;
+       // xMovement=Math.round(xMovement);
+       // yMovement=Math.round(yMovement);
+       // xMovement/=100;
+       // yMovement/=100;
+
+          Log.v("moveLoc","X:"+xMovement+"; Y:"+yMovement);
+          Log.v("moveLoc","X:"+(int)xMovement+"; Y:"+(int)yMovement);
         xLoc += xMovement;
         yLoc += yMovement;
         // Log.v("moveLoc", "X:" + xLoc + "; Y:" + yLoc);
@@ -117,9 +135,9 @@ public class Player {
         } else if (xLoc < -width * 1000 + 100) {
             xLoc = (int) (-width * 1000 + 100);
         }
+
         // if (yLoc > height * 1000 + 100) {
         if (yLoc > 900) {
-
             yLoc = 900;
             //  } else if (yLoc < -height * 1000 - 300) {
         } else if (yLoc < -900) {
@@ -137,10 +155,29 @@ public class Player {
             bullets.add(new Bullet(context, direction, PLAYER_TWO, xLoc, yLoc, projM, viewM));
         }
     }
-
+    public void resetBullet(Bullet b, String direction, float[] projM, float[] viewM) {
+        b.reset(xLoc,yLoc,direction,playerType);
+    }
+    private boolean up = false;
     public void moveBullets() {
         for (Bullet b : bullets) {
             b.move();
+        }
+        double interval = 0;
+
+        if(up) {
+            yLoc+=interval;
+        }
+        else{
+            yLoc-=interval;
+        }
+        if (yLoc > 900) {
+            up=false;
+            yLoc = 900;
+            //  } else if (yLoc < -height * 1000 - 300) {
+        } else if (yLoc < -900) {
+            up=true;
+            yLoc = -900;
         }
     }
 

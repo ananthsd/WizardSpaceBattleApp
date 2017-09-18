@@ -7,11 +7,13 @@ import android.opengl.Matrix;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 
@@ -29,15 +31,19 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Context context;
     private Circle p1Eye, p2Eye, p1JoyStick, p2JoyStick;
     private BulletObject bulletObject;
-    private int counter;
+    private int counter,alternateCounter=0;
     private ArrayList<Collision> collisions;
     private CollisionEffect collisionEffect;
-
+    //private volatile Queue<Bullet> queuedBullets;
+    private final int queueMin= 20;
+    FPSCounter fpsCounter ;
     public MyGLRenderer(Context context, TextView score1, TextView score2, TextView health1, TextView health2) {
         player1 = new Player(context, Player.PLAYER_ONE, score1, health1);
         player2 = new Player(context, Player.PLAYER_TWO, score2, health2);
         collisions = new ArrayList<>();
         this.context = context;
+        //queuedBullets = new ConcurrentLinkedQueue<>();
+        fpsCounter = new FPSCounter();
     }
 
     public Player getPlayer1() {
@@ -49,9 +55,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceCreated(GL10 unused, javax.microedition.khronos.egl.EGLConfig config) {
+    public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // Set the background frame color
         //  GLES20.glClearColor(0.25f, 0.93f, 0.36f, 1.0f);
+        //Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
         GLES20.glClearColor(Player.colorBG[0], Player.colorBG[1], Player.colorBG[2], 1.0f);
 
         // initialize a triangle
@@ -76,6 +83,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         bulletObject = new BulletObject();
 
         collisionEffect = new CollisionEffect();
+
     }
 
     private float[] mRotationMatrix = new float[16];
@@ -84,14 +92,24 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 unused) {
         //Checks if bullets are out of bounds
         //Log.v("positions",GameScreen.mPreviousX+";"+GameScreen.mPreviousY);
+        if(GameScreen.p1Touch){
+            player1.move();
+        }
+        if(GameScreen.p2Touch){
+            player2.move();
+        }
         for (int i = player1.getBullets().size() - 1; i >= 0; i--) {
-            if (player1.getBullets().get(i).outOfBounds()) {
+            Bullet bullet = player1.getBullets().get(i);
+            if (bullet.outOfBounds()) {
                 player1.getBullets().remove(i);
+                //queuedBullets.add(bullet);
             }
         }
         for (int i = player2.getBullets().size() - 1; i >= 0; i--) {
-            if (player2.getBullets().get(i).outOfBounds()) {
+            Bullet bullet = player2.getBullets().get(i);
+            if (bullet.outOfBounds()) {
                 player2.getBullets().remove(i);
+                //queuedBullets.add(bullet);
             }
         }
 
@@ -150,23 +168,90 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mSquare2.draw(mMVPMatrix2);
         mHat2.draw(mMVPMatrix2);
         counter++;
+        alternateCounter++;
         int counterInterval = 1;
-
+        int counterInterval2 = 5;
+       // Log.v("queue",queuedBullets.size()+"");
         if (player2.getxLoc() < player1.getxLoc()) {
             robe2.draw(mMVPMatrix2, Robe.RIGHT_ROBE);
             p2Eye.draw(mMVPMatrix2, Circle.FACE_LEFT, true, true);
             if (counter == counterInterval) {
-                player1.addBullet(Bullet.LEFT_FACING, mProjectionMatrix, mViewMatrix);
-                player2.addBullet(Bullet.RIGHT_FACING, mProjectionMatrix, mViewMatrix);
+               /* Bullet b = queuedBullets.poll();
+                if(b!=null&&queuedBullets.size()>queueMin){
+                    //b.reset(player1.getxLocPx(),player1.getyLocPx(),Bullet.LEFT_FACING,Player.PLAYER_ONE);
+                    player1.resetBullet(b,Bullet.LEFT_FACING,mProjectionMatrix,mViewMatrix);
+                    player1.getBullets().add(b);
+                    if(alternateCounter==counterInterval2){
+                     //   player1.addBullet(Bullet.LEFT_FACING, mProjectionMatrix, mViewMatrix);
+                    }
+
+                }
+                else {
+                    //Log.v("queueGen","generated");
+                    player1.addBullet(Bullet.LEFT_FACING, mProjectionMatrix, mViewMatrix);
+                }
+
+                b = queuedBullets.poll();
+                if(b!=null&&queuedBullets.size()>queueMin){
+                    //b.reset(player2.getxLocPx(),player2.getyLocPx(),Bullet.RIGHT_FACING,Player.PLAYER_TWO);
+                    player2.resetBullet(b,Bullet.RIGHT_FACING,mProjectionMatrix,mViewMatrix);
+                    player2.getBullets().add(b);
+                    if(alternateCounter==counterInterval2){
+                     //   player2.addBullet(Bullet.RIGHT_FACING, mProjectionMatrix, mViewMatrix);
+                    }
+
+                }
+                else {
+                   // Log.v("queueGen","generated");
+
+                    player2.addBullet(Bullet.RIGHT_FACING, mProjectionMatrix, mViewMatrix);
+                }
+                if(alternateCounter==5) {
+                    alternateCounter = 0;
+                }*/
+                player1.addBullet(Player.LEFT_FACING, mProjectionMatrix, mViewMatrix);
+                player2.addBullet(Player.RIGHT_FACING, mProjectionMatrix, mViewMatrix);
                 counter = 0;
             }
         } else {
             robe2.draw(mMVPMatrix2, Robe.LEFT_ROBE);
             p2Eye.draw(mMVPMatrix2, Circle.FACE_RIGHT, true, true);
             if (counter == counterInterval) {
-                player1.addBullet(Bullet.RIGHT_FACING, mProjectionMatrix, mViewMatrix);
-                player2.addBullet(Bullet.LEFT_FACING, mProjectionMatrix, mViewMatrix);
-                counter = 0;
+                /*Bullet b = queuedBullets.poll();
+                if(b!=null&&queuedBullets.size()>queueMin){
+                    //b.reset(player1.getxLocPx(),player1.getyLocPx(),Bullet.RIGHT_FACING,Player.PLAYER_ONE);
+                    player1.resetBullet(b,Bullet.RIGHT_FACING,mProjectionMatrix,mViewMatrix);
+                    player1.getBullets().add(b);
+                    if(alternateCounter==counterInterval2){
+                      //  player1.addBullet(Bullet.RIGHT_FACING, mProjectionMatrix, mViewMatrix);
+                    }
+                }
+                else {
+                    Log.v("queueGen","generated");
+
+                    player1.addBullet(Bullet.RIGHT_FACING, mProjectionMatrix, mViewMatrix);
+                }
+                b = queuedBullets.poll();
+                if(b!=null&&queuedBullets.size()>queueMin){
+                   // b.reset(player2.getxLocPx(),player2.getyLocPx(),Bullet.LEFT_FACING,Player.PLAYER_TWO);
+                    player2.resetBullet(b,Bullet.LEFT_FACING,mProjectionMatrix,mViewMatrix);
+                    player2.getBullets().add(b);
+                    if(alternateCounter==counterInterval2){
+                     //   player2.addBullet(Bullet.LEFT_FACING, mProjectionMatrix, mViewMatrix);
+                    }
+                }
+                else {
+                    Log.v("queueGen","generated");
+
+                    player2.addBullet(Bullet.LEFT_FACING, mProjectionMatrix, mViewMatrix);
+
+                }
+                alternateCounter= 0;*/
+                player1.addBullet(Player.RIGHT_FACING, mProjectionMatrix, mViewMatrix);
+                player2.addBullet(Player.LEFT_FACING, mProjectionMatrix, mViewMatrix);
+                if (counterInterval==counter) {
+                    counter = 0;
+                }
             }
         }
         //  Log.v("bullets",player1.getBullets().size()+";"+player1.getBullets().size());
@@ -183,6 +268,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                     if (player1.getBullets().get(i).collideDetect(player2.getBullets().get(j))) {
                         //  Log.v("collide","p1:x:"+player1.getBullets().get(i).getxLoc()+";y:"+player1.getBullets().get(i).getyLoc()+"p2:x:"+player2.getBullets().get(i).getxLoc()+";y:"+player2.getBullets().get(i).getyLoc());
 //                        collisions.add(new Collision((player1.getBullets().get(i).getxLoc()+player2.getBullets().get(i).getxLoc())/2,(player1.getBullets().get(i).getyLoc()+player2.getBullets().get(i).getyLoc())/2,mProjectionMatrix,mViewMatrix));
+                        try {
+                            //queuedBullets.add(player1.getBullets().get(i));
+                            //queuedBullets.add(player2.getBullets().get(i));
+                        }catch (IndexOutOfBoundsException e){
+                        Log.v("error",e.getMessage());
+                        }
                         player1.getBullets().remove(i);
                         player2.getBullets().remove(j);
 
@@ -192,14 +283,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
         bulletObject.draw(player1.getBullets());
         bulletObject.draw(player2.getBullets());
-        collisionEffect.draw(collisions);
-        collisions.removeAll(collisions);
+        //collisionEffect.draw(collisions);
+        //collisions.removeAll(collisions);
 
 
         for (int i = player1.getBullets().size() - 1; i >= 0; i--) {
             if (player1.getBullets().size() > i) {
                 if (player2.collideDetect(player1.getBullets().get(i))) {
                     player2.damage();
+                    //queuedBullets.add(player1.getBullets().get(i));
                     player1.getBullets().remove(i);
                 }
             }
@@ -208,6 +300,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             if (player2.getBullets().size() > i) {
                 if (player1.collideDetect(player2.getBullets().get(i))) {
                     player1.damage();
+                    //queuedBullets.add(player2.getBullets().get(i));
                     player2.getBullets().remove(i);
                 }
             }
@@ -234,7 +327,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Matrix.translateM(scratch,0, -1.0f, 0, 0);
         // Draw shape
         // mHat.draw(scratch);
-
+fpsCounter.logFrame();
     }
 
     public void resetGame() {

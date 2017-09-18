@@ -128,7 +128,7 @@ public class BulletObject {
             GLES20.glEnableVertexAttribArray(mPositionHandle);
 
             // Prepare the triangle coordinate data
-            if (b.getDirection().equals(Bullet.LEFT_FACING)) {
+            if (b.getDirection().equals(Player.LEFT_FACING)) {
                 GLES20.glVertexAttribPointer(
                         mPositionHandle, COORDS_PER_VERTEX,
                         GLES20.GL_FLOAT, false,

@@ -9,7 +9,6 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,10 +17,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class GameScreen extends Activity {
-    private VelocityTracker mVelocityTracker = null;
+
     private Point point1, point2;
     private static MyGLSurfaceView mGLView;
-    private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
+
     public static volatile double mPreviousX, mPreviousY, mPreviousX2, mPreviousY2;
     private static Player player1, player2;
     private static double widthPixels, heightPixels;
@@ -82,19 +81,26 @@ public class GameScreen extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 float x = event.getX();
                 float y = event.getY();
+               // Log.v("action",MotionEvent.actionToString(event.getAction()));
                 switch (event.getAction()) {
+
                     case MotionEvent.ACTION_MOVE:
-                        player1.move(Math.atan2(y - mPreviousY, x - mPreviousX), Math.sqrt((x - mPreviousX) * (x - mPreviousX) + (y - mPreviousY) * (y - mPreviousY)));
+                       // Log.v("action","move");
+                        player1.setMoveValues(Math.atan2(y - mPreviousY, x - mPreviousX), Math.sqrt((x - mPreviousX) * (x - mPreviousX) + (y - mPreviousY) * (y - mPreviousY)));
+                        //player1.move();
                         mGLView.requestRender();
                         break;
                     case MotionEvent.ACTION_DOWN:
+                       // Log.v("action","down");
                         mPreviousX = x;
                         mPreviousY = y;
                         p1Touch = true;
                         break;
                     case MotionEvent.ACTION_UP:
+                      //  Log.v("action","up");
                         p1Touch = false;
                         break;
+
                 }
                 return true;
             }
@@ -106,8 +112,8 @@ public class GameScreen extends Activity {
                 float y = event.getY();
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_MOVE:
-                        player2.move(Math.atan2(y - mPreviousY2, x - mPreviousX2), Math.sqrt((x - mPreviousX2) * (x - mPreviousX2) + (y - mPreviousY2) * (y - mPreviousY2)));
-
+                        player2.setMoveValues(Math.atan2(y - mPreviousY2, x - mPreviousX2), Math.sqrt((x - mPreviousX2) * (x - mPreviousX2) + (y - mPreviousY2) * (y - mPreviousY2)));
+                       // player2.move();
                         mGLView.requestRender();
                         break;
                     case MotionEvent.ACTION_DOWN:

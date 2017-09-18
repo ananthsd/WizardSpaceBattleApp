@@ -206,15 +206,17 @@ public class SettingsActivity extends Activity {
                 editor.commit();
 
                 if (isChecked) {
-              if(BackgroundSoundService.player==null){
+
                   Intent svc = new Intent(getApplicationContext(), BackgroundSoundService.class);
                   startService(svc);
-              }else {
-                  BackgroundSoundService.player.start();
-              }
+
+                  //BackgroundSoundService.player.start();
+
 
                 } else {
-                    BackgroundSoundService.player.pause();
+                   // BackgroundSoundService.player.pause();
+                    Intent svc = new Intent(getApplicationContext(), BackgroundSoundService.class);
+                    stopService(svc);
                 }
             }
         });

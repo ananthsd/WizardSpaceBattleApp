@@ -12,8 +12,19 @@ public class Bullet {
     private Context context;
     private String direction, color;
     private double width, height;
+
+    public void reset(int xLoc, int yLoc, String direction, String color) {
+        this.xLoc = xLoc;
+        this.yLoc = yLoc;
+        Matrix.multiplyMM(mvpMatrix, 0, projectionM, 0, viewM, 0);
+        Matrix.translateM(mvpMatrix, 0, getxLoc(), getyLoc(), 0);
+        this.direction = direction;
+        this.color = color;
+    }
+
+
     private volatile int xLoc, yLoc;
-    public static final String LEFT_FACING = "left", RIGHT_FACING = "right";
+
     private float[] mvpMatrix,projectionM,viewM;
     private int widthPixels,heightPixels;
     private double speed;
@@ -38,7 +49,7 @@ public class Bullet {
     }
 
     public void move() {
-        if (direction.equals(LEFT_FACING)) {
+        if (direction.equals(Player.LEFT_FACING)) {
             xLoc-=speed*1000;
             Matrix.translateM(mvpMatrix, 0, -(float)speed, 0, 0);
 
