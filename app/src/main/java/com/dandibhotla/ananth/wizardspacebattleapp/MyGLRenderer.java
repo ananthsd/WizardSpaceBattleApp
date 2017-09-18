@@ -30,13 +30,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private int pixelWidth, pixelheight;
     private Context context;
     private Circle p1Eye, p2Eye, p1JoyStick, p2JoyStick;
+    private Line p1Line, p2Line;
     private BulletObject bulletObject;
     private int counter,alternateCounter=0;
     private ArrayList<Collision> collisions;
     private CollisionEffect collisionEffect;
     //private volatile Queue<Bullet> queuedBullets;
     private final int queueMin= 20;
-    FPSCounter fpsCounter ;
+    private FPSCounter fpsCounter;
     public MyGLRenderer(Context context, TextView score1, TextView score2, TextView health1, TextView health2) {
         player1 = new Player(context, Player.PLAYER_ONE, score1, health1);
         player2 = new Player(context, Player.PLAYER_TWO, score2, health2);
@@ -79,7 +80,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         p1JoyStick = new Circle(Arrays.copyOf(Player.colorP1, 4));
         p2JoyStick = new Circle(Arrays.copyOf(Player.colorP2, 4));
-
+        p1Line = new Line();
+        p2Line = new Line();
         bulletObject = new BulletObject();
 
         collisionEffect = new CollisionEffect();
@@ -124,9 +126,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         if (GameScreen.p2Touch) {
             Matrix.multiplyMM(joyStickMatrix2, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-            Matrix.translateM(joyStickMatrix2, 0, GameScreen.getmPreviousX2Float(), GameScreen.getmPreviousY2Float(), 0); // apply translation
+            Matrix.translateM(joyStickMatrix2, 0, GameScreen.getmCurrentX2Float(), GameScreen.getmCurrentY2Float(), 0); // apply translation
 
             p2JoyStick.draw(joyStickMatrix2, "", true, false);
+
+            Matrix.multiplyMM(joyStickLineMatrix2, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+
+            //Matrix.translateM(joyStickLineMatrix2, 0, GameScreen.getmPreviousX2Float(), GameScreen.getmPreviousY2Float(), 0); // apply translation
+          //  Log.v("coords","("+GameScreen.getmPreviousX2Float()+","+GameScreen.getmPreviousY2Float()+")"+"("+GameScreen.getmCurrentX2Float()+","+GameScreen.getmCurrentY2Float()+")");
+           // Log.v("coords","("+GameScreen.mPreviousX2+","+GameScreen.mPreviousY2+")"+"("+GameScreen.mCurrentX2+","+GameScreen.mCurrentY2+")");
+            p2Line.setCoords(GameScreen.getmPreviousX2Float(),GameScreen.getmPreviousY2Float(),GameScreen.getmCurrentX2Float(),GameScreen.getmCurrentY2Float());
+            p2Line.draw(joyStickLineMatrix2);
+
         } else {
             p2JoyStick.resetColor();
         }
@@ -134,9 +145,17 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         if (GameScreen.p1Touch) {
             Matrix.multiplyMM(joyStickMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-            Matrix.translateM(joyStickMatrix, 0, GameScreen.getmPreviousXFloat(), GameScreen.getmPreviousYFloat(), 0); // apply translation
+            Matrix.translateM(joyStickMatrix, 0, GameScreen.getmCurrentXFloat(), GameScreen.getmCurrentYFloat(), 0); // apply translation
 
             p1JoyStick.draw(joyStickMatrix, "", true, false);
+
+            Matrix.multiplyMM(joyStickLineMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+
+            //Matrix.translateM(joyStickLineMatrix2, 0, GameScreen.getmPreviousX2Float(), GameScreen.getmPreviousY2Float(), 0); // apply translation
+          //  Log.v("coords","("+GameScreen.getmPreviousX2Float()+","+GameScreen.getmPreviousY2Float()+")"+"("+GameScreen.getmCurrentX2Float()+","+GameScreen.getmCurrentY2Float()+")");
+           // Log.v("coords","("+GameScreen.mPreviousX+","+GameScreen.mPreviousY+")"+"("+GameScreen.mCurrentX+","+GameScreen.mCurrentY+")");
+            p1Line.setCoords(GameScreen.getmPreviousXFloat(),GameScreen.getmPreviousYFloat(),GameScreen.getmCurrentXFloat(),GameScreen.getmCurrentYFloat());
+            p1Line.draw(joyStickLineMatrix);
         } else {
             p1JoyStick.resetColor();
         }
@@ -353,7 +372,9 @@ fpsCounter.logFrame();
     private final float[] mMVPMatrix2 = new float[16];
     private final float[] mMVPMatrix3 = new float[16];
     private final float[] joyStickMatrix = new float[16];
+    private final float[] joyStickLineMatrix = new float[16];
     private final float[] joyStickMatrix2 = new float[16];
+    private final float[] joyStickLineMatrix2 = new float[16];
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
 

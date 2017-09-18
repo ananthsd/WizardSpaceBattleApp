@@ -22,6 +22,7 @@ public class GameScreen extends Activity {
     private static MyGLSurfaceView mGLView;
 
     public static volatile double mPreviousX, mPreviousY, mPreviousX2, mPreviousY2;
+    public static volatile double mCurrentX, mCurrentY, mCurrentX2, mCurrentY2;
     private static Player player1, player2;
     private static double widthPixels, heightPixels;
     public static boolean p1Touch, p2Touch;
@@ -88,6 +89,8 @@ public class GameScreen extends Activity {
                        // Log.v("action","move");
                         player1.setMoveValues(Math.atan2(y - mPreviousY, x - mPreviousX), Math.sqrt((x - mPreviousX) * (x - mPreviousX) + (y - mPreviousY) * (y - mPreviousY)));
                         //player1.move();
+                        mCurrentX = x;
+                        mCurrentY = y;
                         mGLView.requestRender();
                         break;
                     case MotionEvent.ACTION_DOWN:
@@ -114,6 +117,8 @@ public class GameScreen extends Activity {
                     case MotionEvent.ACTION_MOVE:
                         player2.setMoveValues(Math.atan2(y - mPreviousY2, x - mPreviousX2), Math.sqrt((x - mPreviousX2) * (x - mPreviousX2) + (y - mPreviousY2) * (y - mPreviousY2)));
                        // player2.move();
+                        mCurrentX2 = x;
+                        mCurrentY2 = y;
                         mGLView.requestRender();
                         break;
                     case MotionEvent.ACTION_DOWN:
@@ -241,6 +246,42 @@ public class GameScreen extends Activity {
             return -(float) (distance / (heightPixels / 2));
         } else {
             double distance = heightPixels / 2 - mPreviousY2;
+            return (float) (distance / (heightPixels / 2));
+        }
+    }
+
+
+    public static float getmCurrentXFloat() {
+        double distance = mCurrentX / widthPixels * widthPixels / heightPixels * 2;
+        //Log.v("joystick", mPreviousX + "");
+        return (float) (-distance + mGLView.getScreenWidth());
+    }
+
+    public static float getmCurrentYFloat() {
+        if (mCurrentY > heightPixels / 2) {
+            double distance = mCurrentY - heightPixels / 2;
+            return -(float) (distance / (heightPixels / 2));
+        } else {
+            double distance = heightPixels / 2 - mCurrentY;
+            return (float) (distance / (heightPixels / 2));
+        }
+    }
+
+    public static float getmCurrentX2Float() {
+
+
+        double distance2 = mCurrentX2 / rightLayout.getWidth() * widthPixels / heightPixels;
+        //Log.v("joystick", mPreviousX2 + ";" + widthPixels / heightPixels);
+        // Log.v("joystick",mPreviousX2/widthPixels*mGLView.getScreenWidth()*2+";");
+        return (float) -distance2;
+    }
+
+    public static float getmCurrentY2Float() {
+        if (mCurrentY2 > heightPixels / 2) {
+            double distance = mCurrentY2 - heightPixels / 2;
+            return -(float) (distance / (heightPixels / 2));
+        } else {
+            double distance = heightPixels / 2 - mCurrentY2;
             return (float) (distance / (heightPixels / 2));
         }
     }
