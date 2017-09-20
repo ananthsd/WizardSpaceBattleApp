@@ -17,13 +17,19 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5">
-
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_arrow_back"
+                android:background="@null"
+                android:id="@+id/backButton"/>
             <TextView
                 android:id="@+id/settings_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Settings"
-                android:textSize="40dp" />
+                android:textSize="40dp"
+                android:layout_toRightOf="@id/backButton"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/settings_recycler_view"
@@ -42,8 +48,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight=".5"
-                android:orientation="vertical"
-                android:animateLayoutChanges="true">
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/glFrameLayout"
@@ -52,43 +58,58 @@
                     android:layout_weight=".5"
                     android:orientation="horizontal" />
 
-                <RelativeLayout
-                    android:id="@+id/settingColorInfoLayout"
+                <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight=".5"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
+                    android:layout_weight=".5">
 
-                    <Button
-                        android:id="@+id/p1ColorButton"
+                    <RelativeLayout
+                        android:id="@+id/settingColorInfoLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="center_horizontal"
-                        android:text="Change P1 Color"
-                        android:layout_marginTop="10dp"
+                        android:layout_height="0dp"
+                        android:layout_weight=".5"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
 
-                        style="@style/Widget.AppCompat.Button.Colored"/>
+                        <Button
+                            android:id="@+id/p1ColorButton"
+                            style="@style/Widget.AppCompat.Button.Colored"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
 
-                    <Button
-                        android:id="@+id/p2ColorButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/p1ColorButton"
-                        android:text="Change P2 Color"
-                        android:layout_marginTop="5dp"
-                        style="@style/Widget.AppCompat.Button.Colored"/>
+                            android:text="Change P1 Color" />
 
-                    <Button
-                        android:id="@+id/bgColorButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/p2ColorButton"
-                        android:text="Change Background Color"
-                        android:layout_marginTop="5dp"
-                        style="@style/Widget.AppCompat.Button.Colored"/>
-                </RelativeLayout>
+                        <Button
+                            android:id="@+id/p2ColorButton"
+                            style="@style/Widget.AppCompat.Button.Colored"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/p1ColorButton"
+                            android:layout_marginTop="5dp"
+                            android:text="Change P2 Color" />
+
+                        <Button
+                            android:id="@+id/bgColorButton"
+                            style="@style/Widget.AppCompat.Button.Colored"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/p2ColorButton"
+                            android:layout_marginTop="5dp"
+                            android:text="Change Background Color" />
+
+                        <Button
+                            android:id="@+id/resetColorButton"
+                            style="@style/Widget.AppCompat.Button.Colored"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/bgColorButton"
+
+                            android:text="Reset Colors" />
+                    </RelativeLayout>
+                </ScrollView>
 
                 <RelativeLayout
                     android:id="@+id/settingMusicInfoLayout"
@@ -119,18 +140,20 @@
                             android:layout_centerHorizontal="true"
                             android:checked="false"
                             android:text="Toggle Music" />
+
                         <Button
                             android:id="@+id/setVolumeButton"
+                            style="@style/Widget.AppCompat.Button.Colored"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/volumeBar"
-                            android:text="Set Volume"
-                            style="@style/Widget.AppCompat.Button.Colored"/>
+                            android:text="Set Volume" />
                         />
                     </LinearLayout>
 
 
                 </RelativeLayout>
+
             </LinearLayout>
 
 

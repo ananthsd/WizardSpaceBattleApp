@@ -6,6 +6,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import static com.dandibhotla.ananth.wizardspacebattleapp.Player.colorBG;
+
 /**
  * Created by Ananth on 7/22/2017.
  */
@@ -46,9 +48,9 @@ public class Hat {
             0.1f, 0.1f, 0.0f  // bottom right
     };
 
-    // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 1f, 1f, 1f, 1.0f };
-
+    // Set colorWhite with red, green, blue and alpha (opacity) values
+    float colorWhite[] = { 1f, 1f, 1f, 1.0f };
+    float colorBlack[] = { 0f, 0f, 0f, 1.0f };
     public Hat() {
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
@@ -106,8 +108,16 @@ public class Hat {
         // get handle to fragment shader's vColor member
         mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
 
-        // Set color for drawing the triangle
-        GLES20.glUniform4fv(mColorHandle, 1, color, 0);
+        if (0.2126 * colorBG[0] + 0.7152 * colorBG[1] + 0.0722 * colorBG[2] > 0.179) {
+            GLES20.glUniform4fv(mColorHandle, 1, colorBlack, 0);
+
+            // Log.v("colorWhite","black");
+        } else {
+            GLES20.glUniform4fv(mColorHandle, 1, colorWhite, 0);
+            //Log.v("colorWhite","white");
+        }
+        // Set colorWhite for drawing the triangle
+        //GLES20.glUniform4fv(mColorHandle, 1, colorWhite, 0);
 
         // get handle to shape's transformation matrix
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");

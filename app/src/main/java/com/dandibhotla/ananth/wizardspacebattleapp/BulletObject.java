@@ -148,10 +148,10 @@ public class BulletObject {
             GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
 // Enable blending
-            GLES20.glEnable(GLES20.GL_BLEND);
+            //GLES20.glEnable(GLES20.GL_BLEND);
             GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
-            // Set color for drawing the triangle
-          //  Log.v("color",b.getColor());
+            // Set colorWhite for drawing the triangle
+          //  Log.v("colorWhite",b.getColor());
             if (b.getColor().equals(Player.PLAYER_TWO)) {
                 GLES20.glUniform4fv(mColorHandle, 1, Player.colorP2, 0);
             } else {
@@ -194,7 +194,7 @@ public class BulletObject {
         // get handle to fragment shader's vColor member
         mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
 
-        // Set color for drawing the triangle
+        // Set colorWhite for drawing the triangle
 
             GLES20.glUniform4fv(mColorHandle, 1, colorP2, 0);
 

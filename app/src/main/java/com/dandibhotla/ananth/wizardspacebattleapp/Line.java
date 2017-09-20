@@ -42,7 +42,7 @@ public class Line {
 
     };
 
-    // Set color with red, green, blue and alpha (opacity) values
+    // Set colorWhite with red, green, blue and alpha (opacity) values
     float color[] = { 1f, 1f, 1f, 1.0f };
     public void setCoords(float x, float y, float x2, float y2){
         triangleCoords[0]=x;
@@ -111,7 +111,7 @@ public class Line {
         // get handle to fragment shader's vColor member
         mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
 
-        // Set color for drawing the triangle
+        // Set colorWhite for drawing the triangle
         GLES20.glUniform4fv(mColorHandle, 1, color, 0);
 
         // get handle to shape's transformation matrix

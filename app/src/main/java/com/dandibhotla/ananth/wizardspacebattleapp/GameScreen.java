@@ -13,8 +13,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import static com.dandibhotla.ananth.wizardspacebattleapp.Player.colorBG;
 
 public class GameScreen extends Activity {
 
@@ -26,6 +29,7 @@ public class GameScreen extends Activity {
     private static Player player1, player2;
     private static double widthPixels, heightPixels;
     public static boolean p1Touch, p2Touch;
+    private ImageButton pauseButton;
     @Override
     protected void onPause() {
         super.onPause();
@@ -135,6 +139,7 @@ public class GameScreen extends Activity {
         });
 
         frame.addView(mGLView, 0);
+        pauseButton = (ImageButton)findViewById(R.id.pauseButton);
 
         point1 = new Point();
         point2 = new Point();
@@ -152,11 +157,26 @@ public class GameScreen extends Activity {
 
         health1.setTextColor(Color.rgb((int) (Player.colorP1[0] * 255), (int) (Player.colorP1[1] * 255), (int) (Player.colorP1[2] * 255)));
         health2.setTextColor(Color.rgb((int) (Player.colorP2[0] * 255), (int) (Player.colorP2[1] * 255), (int) (Player.colorP2[2] * 255)));*/
-        score1.setTextColor(Color.WHITE);
+
+        if (0.2126 * colorBG[0] + 0.7152 * colorBG[1] + 0.0722 * colorBG[2] > 0.179) {
+            score1.setTextColor(Color.BLACK);
+            health1.setTextColor(Color.BLACK);
+            score2.setTextColor(Color.BLACK);
+            health2.setTextColor(Color.BLACK);
+            pauseButton.setImageResource(R.drawable.ic_pause_black_24dp);
+        } else {
+            score1.setTextColor(Color.WHITE);
+            health1.setTextColor(Color.WHITE);
+            score2.setTextColor(Color.WHITE);
+            health2.setTextColor(Color.WHITE);
+            pauseButton.setImageResource(R.drawable.ic_action_pause);
+        }
+
+       /* score1.setTextColor(Color.WHITE);
         score2.setTextColor(Color.WHITE);
 
         health1.setTextColor(Color.WHITE);
-        health2.setTextColor(Color.WHITE);
+        health2.setTextColor(Color.WHITE);*/
 
         health1.setText("P1 Health: " + player1.getHealth());
         health2.setText("P2 Health: " + player2.getHealth());

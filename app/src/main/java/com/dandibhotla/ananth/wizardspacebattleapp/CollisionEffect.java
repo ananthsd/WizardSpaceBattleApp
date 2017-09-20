@@ -119,8 +119,8 @@ public class CollisionEffect {
             // get handle to fragment shader's vColor member
             mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
 
-            // Set color for drawing the triangle
-            //  Log.v("color",b.getColor());
+            // Set colorWhite for drawing the triangle
+            //  Log.v("colorWhite",b.getColor());
 
                 GLES20.glUniform4fv(mColorHandle, 1, color, 0);
 

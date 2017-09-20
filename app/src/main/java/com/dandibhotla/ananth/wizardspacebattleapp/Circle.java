@@ -180,77 +180,77 @@ public class Circle {
                 color[2] -= increment3;
             }
             count++;
-/*            if(color[0]-increment<0){
+/*            if(colorWhite[0]-increment<0){
                 colorUp1 = true;
             }
-            if(color[1]-increment<0){
+            if(colorWhite[1]-increment<0){
                 colorUp2 = true;
             }
-            if(color[2]-increment<0){
+            if(colorWhite[2]-increment<0){
                 colorUp3 = true;
             }
-            Log.v("colorStuff",(color[2]+increment>colorStart[2])+"");
+            Log.v("colorStuff",(colorWhite[2]+increment>colorStart[2])+"");
 
-            if(color[0] + increment > colorStart[0]){
+            if(colorWhite[0] + increment > colorStart[0]){
                 colorUp1 = false;
             }
-            if(color[1] + increment > colorStart[1]){
+            if(colorWhite[1] + increment > colorStart[1]){
                 colorUp2 = false;
             }
-            if(color[2] + increment > colorStart[2]){
+            if(colorWhite[2] + increment > colorStart[2]){
                 colorUp3 = false;
             }
 
           //  Log.v("colorUp",colorUp+"");
             if(colorUp1&&colorUp2&&colorUp3){
-                if(color[0] + increment <= colorStart[0]){
-                    color[0]+=increment;
+                if(colorWhite[0] + increment <= colorStart[0]){
+                    colorWhite[0]+=increment;
                 }
                 else{
-                    color[0]=colorStart[0];
+                    colorWhite[0]=colorStart[0];
                 }
-                if(color[1] + increment <= colorStart[1]){
-                    color[1]+=increment;
-                }
-                else{
-                    color[1]=colorStart[1];
-                }
-                if(color[2] + increment <= colorStart[2]){
-                    color[2]+=increment;
+                if(colorWhite[1] + increment <= colorStart[1]){
+                    colorWhite[1]+=increment;
                 }
                 else{
-                    color[2]=colorStart[2];
+                    colorWhite[1]=colorStart[1];
+                }
+                if(colorWhite[2] + increment <= colorStart[2]){
+                    colorWhite[2]+=increment;
+                }
+                else{
+                    colorWhite[2]=colorStart[2];
                 }
             }
             else{
-                if(color[0] - increment >= 0.01){
-                    color[0]-=increment;
+                if(colorWhite[0] - increment >= 0.01){
+                    colorWhite[0]-=increment;
                 }
                 else{
-                    color[0]=0;
+                    colorWhite[0]=0;
                 }
-                if(color[1] - increment >= 0.01){
-                    color[1]+=increment;
-                }
-                else{
-                    color[1]=0;
-                }
-                if(color[2] - increment >= 0.01){
-                    color[2]+=increment;
+                if(colorWhite[1] - increment >= 0.01){
+                    colorWhite[1]+=increment;
                 }
                 else{
-                    color[2]=0;
+                    colorWhite[1]=0;
+                }
+                if(colorWhite[2] - increment >= 0.01){
+                    colorWhite[2]+=increment;
+                }
+                else{
+                    colorWhite[2]=0;
                 }
             }*/
 
-           // Log.v("color", color[0] + "," + color[1] + "," + color[2] + "," + color[3]);
+           // Log.v("colorWhite", colorWhite[0] + "," + colorWhite[1] + "," + colorWhite[2] + "," + colorWhite[3]);
            // Log.v("colorStart", colorStart[0] + "," + colorStart[1] + "," + colorStart[2] + "," + colorStart[3]);
         }
         // get handle to fragment shader's vColor member
         mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
 
 
-        // Set color for drawing the triangle
+        // Set colorWhite for drawing the triangle
         GLES20.glUniform4fv(mColorHandle, 1, color, 0);
 
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");

@@ -2,12 +2,14 @@ package com.dandibhotla.ananth.wizardspacebattleapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +21,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,12 +46,12 @@ public class SettingsActivity extends Activity {
     private static RelativeLayout leftLayout, rightLayout, infoLayout;
     private List<String> settingsList;
     private LinearLayout glLinearLayout;
-    private Button p1Color, p2Color, bgColor, volumeButton;
+    private Button p1Color, p2Color, bgColor, volumeButton,resetColorButton;
     private ColorPicker p1ColorPicker, p2ColorPicker, bgColorPicker;
     private DiscreteSeekBar volumeBar;
     private TextView text_seekbar;
     private CheckBox toggleMusic;
-
+    private ImageButton backButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +80,13 @@ public class SettingsActivity extends Activity {
         // settingsList.add("Colors");
         // settingsList.add("Colors");
         settingsRecyclerView = (RecyclerView) findViewById(R.id.settings_recycler_view);
+        backButton = (ImageButton) findViewById(R.id.backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             startActivity(new Intent(SettingsActivity.this,MainMenu.class));
+            }
+        });
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         settingsRecyclerView.setLayoutManager(layoutManager);
         settingsRecyclerView.setAdapter(new SettingsAdapter(this, settingsList));
@@ -88,6 +98,8 @@ public class SettingsActivity extends Activity {
         p1Color = (Button) infoLayout.findViewById(R.id.p1ColorButton);
         p2Color = (Button) infoLayout.findViewById(R.id.p2ColorButton);
         bgColor = (Button) infoLayout.findViewById(R.id.bgColorButton);
+        resetColorButton = (Button) infoLayout.findViewById(R.id.resetColorButton);
+
         SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
 
         p1Color.setBackgroundColor(sharedPref.getInt("colorP1", Color.BLUE));
@@ -177,12 +189,13 @@ public class SettingsActivity extends Activity {
                 colorBG[1] = ((float) Color.green(color)) / 255;
                 colorBG[2] = ((float) Color.blue(color)) / 255;
 
-                //mGLView.setBackgroundColor(color);
-                mGLView.refreshDrawableState();
-                mGLView.requestRender();
+                //mGLView.setBackgroundColor(colorWhite);
+
                 SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("colorBG", color);
+                mGLView.refreshDrawableState();
+                mGLView.requestRender();
                 editor.commit();
                 bgColor.setBackgroundColor(sharedPref.getInt("colorBG", Color.BLACK));
                 if (0.2126 * colorBG[0] + 0.7152 * colorBG[1] + 0.0722 * colorBG[2] > 0.179) {
@@ -194,6 +207,61 @@ public class SettingsActivity extends Activity {
             }
         });
 
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+// 2. Chain together various setter methods to set the dialog characteristics
+        builder.setTitle("Reset Colors?");
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                colorP1[0] = 0f;
+                colorP1[1] = 0f;
+                colorP1[2] = 1f;
+                colorP2[0] = 1f;
+                colorP2[1] = 0f;
+                colorP2[2] = 0f;
+                colorBG[0] = 0f;
+                colorBG[1] = 0f;
+                colorBG[2] = 0f;
+                SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt("colorP1", Color.BLUE);
+                editor.putInt("colorP2", Color.RED);
+                editor.putInt("colorBG", Color.BLACK);
+                mGLView.refreshDrawableState();
+                mGLView.requestRender();
+                editor.commit();
+                p1Color.setBackgroundColor(sharedPref.getInt("colorP1", Color.BLUE));
+                if (0.2126 * colorP1[0] + 0.7152 * colorP1[1] + 0.0722 * colorP1[2] > 0.179) {
+                    p1Color.setTextColor(Color.BLACK);
+                } else {
+                    p1Color.setTextColor(Color.WHITE);
+                }
+                p2Color.setBackgroundColor(sharedPref.getInt("colorP2", Color.RED));
+                if (0.2126 * colorP2[0] + 0.7152 * colorP2[1] + 0.0722 * colorP2[2] > 0.179) {
+                    p2Color.setTextColor(Color.BLACK);
+                } else {
+                    p2Color.setTextColor(Color.WHITE);
+                }
+                bgColor.setBackgroundColor(sharedPref.getInt("colorBG", Color.BLACK));
+                if (0.2126 * colorBG[0] + 0.7152 * colorBG[1] + 0.0722 * colorBG[2] > 0.179) {
+                    bgColor.setTextColor(Color.BLACK);
+                } else {
+                    bgColor.setTextColor(Color.WHITE);
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        builder.create();
+        resetColorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            builder.show();
+            }
+        });
         toggleMusic = (CheckBox) findViewById(R.id.checkMusicBox);
 
         toggleMusic.setChecked(sharedPref.getBoolean("musicToggle", true));

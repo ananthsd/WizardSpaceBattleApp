@@ -33,7 +33,7 @@ public class SettingsRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 unused, javax.microedition.khronos.egl.EGLConfig config) {
-        // Set the background frame color
+        // Set the background frame colorWhite
         //  GLES20.glClearColor(0.25f, 0.93f, 0.36f, 1.0f);
         GLES20.glClearColor(Player.colorBG[0], Player.colorBG[1], Player.colorBG[2], 1.0f);
         // initialize a triangle
@@ -63,7 +63,7 @@ public class SettingsRenderer implements GLSurfaceView.Renderer {
 
 
         //float[] scratch = new float[16];
-        // Redraw background color
+        // Redraw background colorWhite
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         GLES20.glClearColor(Player.colorBG[0], Player.colorBG[1], Player.colorBG[2], 1.0f);
         // Set the camera position (View matrix)
