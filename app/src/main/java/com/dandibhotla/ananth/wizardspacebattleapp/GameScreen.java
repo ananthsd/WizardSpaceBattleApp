@@ -2,16 +2,20 @@ package com.dandibhotla.ananth.wizardspacebattleapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
+import android.transition.Fade;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -30,11 +34,14 @@ public class GameScreen extends Activity {
     private static double widthPixels, heightPixels;
     public static boolean p1Touch, p2Touch;
     private ImageButton pauseButton;
+    private RelativeLayout parentMenu, subMenu;
+    private Button resumeButton,menuButton;
+    public static boolean isPaused;
     @Override
     protected void onPause() {
         super.onPause();
         SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
-        if (BackgroundSoundService.player != null&&sharedPref.getBoolean("musicToggle", true)) {
+        if (BackgroundSoundService.player != null && sharedPref.getBoolean("musicToggle", true)) {
             BackgroundSoundService.player.pause();
         }
     }
@@ -43,10 +50,11 @@ public class GameScreen extends Activity {
     protected void onResume() {
         super.onResume();
         SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
-        if (BackgroundSoundService.player != null&&sharedPref.getBoolean("musicToggle", true)) {
+        if (BackgroundSoundService.player != null && sharedPref.getBoolean("musicToggle", true)) {
             BackgroundSoundService.player.start();
         }
     }
+
     public static void updateScore1() {
         score1.setText("P1 Score: " + player1.getScore());
     }
@@ -70,6 +78,7 @@ public class GameScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mGLView = new MyGLSurfaceView(this);
         setContentView(R.layout.content_game_screen);
@@ -78,19 +87,25 @@ public class GameScreen extends Activity {
         health1 = (TextView) findViewById(R.id.player1Health);
         health2 = (TextView) findViewById(R.id.player2Health);
         FrameLayout frame = (FrameLayout) findViewById(R.id.gameFrame);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setEnterTransition(new Fade());
+            getWindow().setExitTransition(new Fade());
+        }
         leftLayout = (RelativeLayout) findViewById(R.id.leftRelativeLayout);
         rightLayout = (RelativeLayout) findViewById(R.id.rightRelativeLayout);
         leftLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                if(isPaused){
+                    return true;
+                }
                 float x = event.getX();
                 float y = event.getY();
-               // Log.v("action",MotionEvent.actionToString(event.getAction()));
+                // Log.v("action",MotionEvent.actionToString(event.getAction()));
                 switch (event.getAction()) {
 
                     case MotionEvent.ACTION_MOVE:
-                       // Log.v("action","move");
+                        // Log.v("action","move");
                         player1.setMoveValues(Math.atan2(y - mPreviousY, x - mPreviousX), Math.sqrt((x - mPreviousX) * (x - mPreviousX) + (y - mPreviousY) * (y - mPreviousY)));
                         //player1.move();
                         mCurrentX = x;
@@ -98,13 +113,13 @@ public class GameScreen extends Activity {
                         mGLView.requestRender();
                         break;
                     case MotionEvent.ACTION_DOWN:
-                       // Log.v("action","down");
+                        // Log.v("action","down");
                         mPreviousX = x;
                         mPreviousY = y;
                         p1Touch = true;
                         break;
                     case MotionEvent.ACTION_UP:
-                      //  Log.v("action","up");
+                        //  Log.v("action","up");
                         p1Touch = false;
                         break;
 
@@ -115,12 +130,15 @@ public class GameScreen extends Activity {
         rightLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                if(isPaused){
+                    return true;
+                }
                 float x = event.getX();
                 float y = event.getY();
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_MOVE:
                         player2.setMoveValues(Math.atan2(y - mPreviousY2, x - mPreviousX2), Math.sqrt((x - mPreviousX2) * (x - mPreviousX2) + (y - mPreviousY2) * (y - mPreviousY2)));
-                       // player2.move();
+                        // player2.move();
                         mCurrentX2 = x;
                         mCurrentY2 = y;
                         mGLView.requestRender();
@@ -139,7 +157,7 @@ public class GameScreen extends Activity {
         });
 
         frame.addView(mGLView, 0);
-        pauseButton = (ImageButton)findViewById(R.id.pauseButton);
+        pauseButton = (ImageButton) findViewById(R.id.pauseButton);
 
         point1 = new Point();
         point2 = new Point();
@@ -171,7 +189,37 @@ public class GameScreen extends Activity {
             health2.setTextColor(Color.WHITE);
             pauseButton.setImageResource(R.drawable.ic_action_pause);
         }
+        isPaused = false;
+        parentMenu = (RelativeLayout)findViewById(R.id.menu_layout);
+        subMenu = (RelativeLayout)findViewById(R.id.subMenu);
+        resumeButton = (Button)subMenu.findViewById(R.id.resumeButton);
+        menuButton = (Button)subMenu.findViewById(R.id.backMenuButton);
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Log.v("pause", "clicked");
+                subMenu.setVisibility(View.VISIBLE);
+                pauseButton.setVisibility(View.GONE);
 
+                parentMenu.setBackgroundColor(Color.parseColor("#80000000"));
+                isPaused = true;
+            }
+        });
+        resumeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subMenu.setVisibility(View.GONE);
+                pauseButton.setVisibility(View.VISIBLE);
+                parentMenu.setBackgroundColor(Color.parseColor("#00000000"));
+                isPaused = false;
+            }
+        });
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(GameScreen.this,MainMenu.class));
+            }
+        });
        /* score1.setTextColor(Color.WHITE);
         score2.setTextColor(Color.WHITE);
 

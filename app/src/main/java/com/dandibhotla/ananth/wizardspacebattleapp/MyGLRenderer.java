@@ -96,6 +96,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 unused) {
         //Checks if bullets are out of bounds
         //Log.v("positions",GameScreen.mPreviousX+";"+GameScreen.mPreviousY);
+        if(GameScreen.isPaused){
+            return;
+        }
         if (GameScreen.p1Touch) {
             player1.move();
         }

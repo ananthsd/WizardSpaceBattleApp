@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.transition.Fade;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,17 +21,19 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class MainMenu extends Activity {
     private RelativeLayout menuLayout;
-    private ImageView playButton,settingsButton;
+    private ImageView playButton, settingsButton;
     private Animation animation;
     private TextView title;
     private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        SharedPreferences sharedPref = getSharedPreferences("Settings",Context.MODE_PRIVATE);
-        if(sharedPref.getBoolean("musicToggle",true)) {
+        SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        if (sharedPref.getBoolean("musicToggle", true)) {
             Intent svc = new Intent(this, BackgroundSoundService.class);
             startService(svc);
         }
@@ -39,28 +43,34 @@ public class MainMenu extends Activity {
         initTitle();
 
 
+// set an exit transition
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setEnterTransition(new Fade());
+            getWindow().setExitTransition(new Fade());
+        }
 
-        int colorP1 = sharedPref.getInt("colorP1",Color.BLUE);
-        int colorP2 = sharedPref.getInt("colorP2",Color.RED);
-        int colorBG = sharedPref.getInt("colorBG",Color.BLACK);
-        Player.colorP1[0]= ((float) Color.red(colorP1))/255;
-        Player.colorP1[1]= ((float) Color.green(colorP1))/255;
-        Player.colorP1[2]= ((float) Color.blue(colorP1))/255;
 
-        Player.colorP2[0]= ((float) Color.red(colorP2))/255;
-        Player.colorP2[1]= ((float) Color.green(colorP2))/255;
-        Player.colorP2[2]= ((float) Color.blue(colorP2))/255;
+        int colorP1 = sharedPref.getInt("colorP1", Color.BLUE);
+        int colorP2 = sharedPref.getInt("colorP2", Color.RED);
+        int colorBG = sharedPref.getInt("colorBG", Color.BLACK);
+        Player.colorP1[0] = ((float) Color.red(colorP1)) / 255;
+        Player.colorP1[1] = ((float) Color.green(colorP1)) / 255;
+        Player.colorP1[2] = ((float) Color.blue(colorP1)) / 255;
 
-        Player.colorBG[0]= ((float) Color.red(colorBG))/255;
-        Player.colorBG[1]= ((float) Color.green(colorBG))/255;
-        Player.colorBG[2]= ((float) Color.blue(colorBG))/255;
+        Player.colorP2[0] = ((float) Color.red(colorP2)) / 255;
+        Player.colorP2[1] = ((float) Color.green(colorP2)) / 255;
+        Player.colorP2[2] = ((float) Color.blue(colorP2)) / 255;
+
+        Player.colorBG[0] = ((float) Color.red(colorBG)) / 255;
+        Player.colorBG[1] = ((float) Color.green(colorBG)) / 255;
+        Player.colorBG[2] = ((float) Color.blue(colorBG)) / 255;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
-        if (BackgroundSoundService.player != null&&sharedPref.getBoolean("musicToggle", true)) {
+        if (BackgroundSoundService.player != null && sharedPref.getBoolean("musicToggle", true)) {
             BackgroundSoundService.player.pause();
         }
     }
@@ -69,7 +79,7 @@ public class MainMenu extends Activity {
     protected void onResume() {
         super.onResume();
         SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
-        if (BackgroundSoundService.player != null&&sharedPref.getBoolean("musicToggle", true)) {
+        if (BackgroundSoundService.player != null && sharedPref.getBoolean("musicToggle", true)) {
             BackgroundSoundService.player.start();
         }
     }
@@ -79,6 +89,7 @@ public class MainMenu extends Activity {
         settingsButton = (ImageView) findViewById(R.id.settings_image);
         animation = AnimationUtils.loadAnimation(MainMenu.this, R.anim.play_button_anim);
         animation.setDuration(500);
+
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -111,7 +122,10 @@ public class MainMenu extends Activity {
 
 
         animation = AnimationUtils.loadAnimation(MainMenu.this, R.anim.play_button_anim);
+
         animation.setDuration(600);
+
+
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
