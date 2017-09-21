@@ -57,8 +57,10 @@ public class BackgroundSoundService extends Service {
     }
     public static void setVolume(int volume){
         int maxVolume = 100;
-        player.setVolume(volume/(100f),volume/(100f));
+        if(player!=null) {
+                player.setVolume(volume / (100f), volume / (100f));
 
+        }
     }
     @Override
     public void onDestroy() {

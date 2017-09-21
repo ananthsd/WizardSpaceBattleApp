@@ -36,6 +36,7 @@ import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.dandibhotla.ananth.wizardspacebattleapp.BackgroundSoundService.player;
 import static com.dandibhotla.ananth.wizardspacebattleapp.Player.colorBG;
 import static com.dandibhotla.ananth.wizardspacebattleapp.Player.colorP1;
 import static com.dandibhotla.ananth.wizardspacebattleapp.Player.colorP2;
@@ -306,8 +307,11 @@ public class SettingsActivity extends Activity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("musicVolume", volumeBar.getProgress());
                 editor.commit();
-
-                BackgroundSoundService.setVolume(volumeBar.getProgress());
+                if(player!=null) {
+                    if (toggleMusic.isChecked()) {
+                        BackgroundSoundService.setVolume(volumeBar.getProgress());
+                    }
+                }
             }
         });
 
@@ -317,8 +321,8 @@ public class SettingsActivity extends Activity {
     protected void onPause() {
         super.onPause();
         SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
-        if (BackgroundSoundService.player != null&&sharedPref.getBoolean("musicToggle", true)) {
-            BackgroundSoundService.player.pause();
+        if (player != null&&sharedPref.getBoolean("musicToggle", true)) {
+            player.pause();
         }
     }
 
@@ -326,8 +330,8 @@ public class SettingsActivity extends Activity {
     protected void onResume() {
         super.onResume();
         SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
-        if (BackgroundSoundService.player != null&&sharedPref.getBoolean("musicToggle", true)) {
-            BackgroundSoundService.player.start();
+        if (player != null&&sharedPref.getBoolean("musicToggle", true)) {
+            player.start();
         }
     }
 

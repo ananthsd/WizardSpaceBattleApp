@@ -54,7 +54,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
 
     // Involves populating data into the item through holder
     public void setVisibilities(){
-        (((Activity)getContext()).findViewById(R.id.settingColorInfoLayout)).setVisibility(View.GONE);
+        (((Activity)getContext()).findViewById(R.id.scrollColor)).setVisibility(View.GONE);
         (((Activity)getContext()).findViewById(R.id.settingMusicInfoLayout)).setVisibility(View.GONE);
     }
     @Override
@@ -70,7 +70,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 setVisibilities();
-                (((Activity)getContext()).findViewById(R.id.settingColorInfoLayout)).setVisibility(View.VISIBLE);
+                (((Activity)getContext()).findViewById(R.id.scrollColor)).setVisibility(View.VISIBLE);
             }
         });
         }
