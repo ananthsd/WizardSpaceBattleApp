@@ -1,6 +1,9 @@
 package com.dandibhotla.ananth.wizardspacebattleapp;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -8,13 +11,23 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
+
+import com.takusemba.spotlight.OnSpotlightEndedListener;
+import com.takusemba.spotlight.OnSpotlightStartedListener;
+import com.takusemba.spotlight.SimpleTarget;
+import com.takusemba.spotlight.Spotlight;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import static com.dandibhotla.ananth.wizardspacebattleapp.GameScreen.pauseButton;
+import static com.dandibhotla.ananth.wizardspacebattleapp.MainMenu.firstTime;
 
 
 /**
@@ -39,7 +52,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private final int queueMin = 20;
     private FPSCounter fpsCounter;
     private boolean p1Turn = true;
-
+    public static boolean tutorialShown;
+    private float bulletCenter;
     public MyGLRenderer(Context context, TextView score1, TextView score2, TextView health1, TextView health2) {
         player1 = new Player(context, Player.PLAYER_ONE, score1, health1);
         player2 = new Player(context, Player.PLAYER_TWO, score2, health2);
@@ -47,6 +61,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         this.context = context;
         //queuedBullets = new ConcurrentLinkedQueue<>();
         fpsCounter = new FPSCounter();
+        tutorialShown = false;
     }
 
     public Player getPlayer1() {
@@ -62,6 +77,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Set the background frame colorWhite
         //  GLES20.glClearColor(0.25f, 0.93f, 0.36f, 1.0f);
         //Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+
         GLES20.glClearColor(Player.colorBG[0], Player.colorBG[1], Player.colorBG[2], 1.0f);
 
         // initialize a triangle
@@ -99,17 +115,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         if(GameScreen.isPaused){
             return;
         }
-        if (GameScreen.p1Touch) {
-            player1.move();
-        }
-        if (GameScreen.p2Touch) {
-            player2.move();
-        }
+
         for (int i = player1.getBullets().size() - 1; i >= 0; i--) {
             Bullet bullet = player1.getBullets().get(i);
             if (bullet.outOfBounds()) {
+                bulletCenter = player1.getBullets().get(i).getxLoc();
                 player1.getBullets().remove(i);
                 //queuedBullets.add(bullet);
+
             }
         }
         for (int i = player2.getBullets().size() - 1; i >= 0; i--) {
@@ -283,6 +296,80 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     /*    Matrix.multiplyMM(mMVPMatrix3, 0, mProjectionMatrix, 0, mViewMatrix, 0);
         Matrix.translateM(mMVPMatrix3, 0, 0, 1f, 0);
         test.draw(mMVPMatrix3);*/
+    if(firstTime&&!tutorialShown){
+        firstTime = false;
+        SharedPreferences sharedPref = context.getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("firstTime", false);
+        editor.commit();
+        tutorialShown = true;
+        DisplayMetrics display = context.getResources().getDisplayMetrics();
+        int widthPixels = display.widthPixels;
+        int heightPixels = display.heightPixels;
+       final SimpleTarget firstTarget = new SimpleTarget.Builder((Activity) context).setPoint(Math.abs(Math.abs(player1.getxLoc())-screenWidth)*heightPixels, heightPixels/2)
+                .setRadius(200f)
+                .setTitle("Player 1")
+                .setDescription("This square is controlled by the left side of the screen. Controls are like a joystick.")
+                .build();
+        final SimpleTarget secondTarget = new SimpleTarget.Builder((Activity) context).setPoint(Math.abs(Math.abs(player2.getxLoc())+0.1f)*heightPixels, heightPixels/2)
+                .setRadius(200f)
+                .setTitle("Player 2")
+                .setDescription("This square is controlled by the right side of the screen. Controls are like a joystick.")
+                .build();
+        //Log.v("display",widthPixels+":"+widthPixels/2);
+        final SimpleTarget thirdTarget = new SimpleTarget.Builder((Activity) context).setPoint((Math.abs(screenWidth/2-bulletCenter)+0.05f)*heightPixels, heightPixels/2)
+                .setRadius(200f)
+                .setTitle("Lasers")
+                .setDescription("The laser shoots in a player colored line. Don't get hit by the other laser.")
+                .build();
+        View two = ((Activity)context).findViewById(R.id.player1Health);
+        int[] twoLocation = new int[2];
+        two.getLocationInWindow(twoLocation);
+        PointF point =
+                new PointF(twoLocation[0] + two.getWidth() / 2f, twoLocation[1] + two.getHeight() / 2f);
+        Log.v("textview",twoLocation[0]+","+twoLocation[1]);
+        final SimpleTarget fourthTarget = new SimpleTarget.Builder((Activity) context).setPoint(new PointF(twoLocation[0],twoLocation[1]))
+                .setRadius(200f)
+                .setTitle("Information")
+                .setDescription("Each player has a score and health indicator.")
+                .build();
+        final SimpleTarget fifthTarget = new SimpleTarget.Builder((Activity) context).setPoint(pauseButton)
+                .setRadius(200f)
+                .setTitle("Pause")
+                .setDescription("Lets you pause and open up the pause menu")
+                .build();
+        ((Activity)context).runOnUiThread(new Runnable() {
+            public void run() {
+                Spotlight.with((Activity) context)
+                        .setDuration(1000L)
+                        .setAnimation(new DecelerateInterpolator(2f))
+                        .setTargets(firstTarget,secondTarget,thirdTarget,fourthTarget,fifthTarget)
+                        .setOnSpotlightStartedListener(new OnSpotlightStartedListener() {
+                            @Override
+                            public void onStarted() {
+
+                            }
+                        })
+                        .setOnSpotlightEndedListener(new OnSpotlightEndedListener() {
+                            @Override
+                            public void onEnded() {
+
+                            }
+                        })
+                        .start();
+
+            }
+
+        });
+
+
+    }
+        if (GameScreen.p1Touch) {
+            player1.move();
+        }
+        if (GameScreen.p2Touch) {
+            player2.move();
+        }
         player1.moveBullets();
         player2.moveBullets();
         //Collision detection with other bullets

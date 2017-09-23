@@ -13,19 +13,23 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import static com.dandibhotla.ananth.wizardspacebattleapp.MyGLRenderer.tutorialShown;
+
 public class MainMenu extends Activity {
     private RelativeLayout menuLayout;
     private ImageView playButton, settingsButton;
+    private Button tutorialButton;
     private Animation animation;
     private TextView title;
     private FirebaseAnalytics mFirebaseAnalytics;
-
+    public static boolean firstTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +43,7 @@ public class MainMenu extends Activity {
         }
         setContentView(R.layout.main_menu);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firstTime = sharedPref.getBoolean("firstTime",true);
         init();
         initTitle();
 
@@ -87,6 +92,7 @@ public class MainMenu extends Activity {
     private void init() {
         playButton = (ImageView) findViewById(R.id.play_image);
         settingsButton = (ImageView) findViewById(R.id.settings_image);
+        tutorialButton = (Button) findViewById(R.id.tutorial);
         animation = AnimationUtils.loadAnimation(MainMenu.this, R.anim.play_button_anim);
         animation.setDuration(500);
 
@@ -155,6 +161,39 @@ public class MainMenu extends Activity {
             }
         });
         settingsButton.startAnimation(animation);
+
+        animation = AnimationUtils.loadAnimation(MainMenu.this, R.anim.play_button_anim);
+
+        animation.setDuration(700);
+
+
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                tutorialButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        firstTime=true;
+                        tutorialShown = false;
+                        Intent intent = new Intent(MainMenu.this, GameScreen.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
+                    }
+                });
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        tutorialButton.startAnimation(animation);
     }
 
     private void initTitle() {

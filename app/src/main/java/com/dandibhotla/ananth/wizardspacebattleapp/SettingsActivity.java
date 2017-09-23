@@ -295,10 +295,9 @@ public class SettingsActivity extends Activity {
             }
         });
         volumeBar = (DiscreteSeekBar) findViewById(R.id.volumeBar);
-        volumeBar.setTrackColor(Color.BLUE);
-        volumeBar.setScrubberColor(Color.BLUE);
-        volumeBar.setThumbColor(Color.BLUE, Color.BLUE);
         volumeBar.setProgress(sharedPref.getInt("musicVolume", 80));
+
+
         volumeButton = (Button) findViewById(R.id.setVolumeButton);
         volumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -314,7 +313,10 @@ public class SettingsActivity extends Activity {
                 }
             }
         });
-
+        new Color();
+        volumeBar.setTrackColor(0xFFFF4081);
+        volumeBar.setScrubberColor(0xFFFF4081);
+        volumeBar.setThumbColor(0xFFFF4081,0xFFFF4081);
     }
 
     @Override

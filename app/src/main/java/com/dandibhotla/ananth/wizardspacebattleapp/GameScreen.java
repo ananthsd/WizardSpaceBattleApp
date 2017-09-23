@@ -33,7 +33,7 @@ public class GameScreen extends Activity {
     private static Player player1, player2;
     private static double widthPixels, heightPixels;
     public static boolean p1Touch, p2Touch;
-    private ImageButton pauseButton;
+    public static ImageButton pauseButton;
     private RelativeLayout parentMenu, subMenu;
     private Button resumeButton,menuButton;
     public static boolean isPaused;
@@ -53,6 +53,16 @@ public class GameScreen extends Activity {
         if (BackgroundSoundService.player != null && sharedPref.getBoolean("musicToggle", true)) {
             BackgroundSoundService.player.start();
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        }
     }
 
     public static void updateScore1() {
@@ -71,7 +81,7 @@ public class GameScreen extends Activity {
     }
 
 
-    private static TextView score1, score2, health1, health2;
+    public static TextView score1, score2, health1, health2;
     private static RelativeLayout leftLayout, rightLayout;
 
     @Override

@@ -47,6 +47,14 @@
         android:src="@drawable/settingsimage"
         />
 
+    <Button
+        android:id="@+id/tutorial"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/settings_image"
+        android:layout_centerHorizontal="true"
+        android:text="Tutorial" />
 
 
 </RelativeLayout>

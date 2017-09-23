@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class Player {
     private volatile int xLoc, yLoc;
-    private double width, height;
+    private double width;
     private final double MAX_POWER = 100;
     public static final String PLAYER_ONE = "p1";
     public static final String PLAYER_TWO = "p2";
@@ -52,7 +52,6 @@ public class Player {
         int widthPixels = display.widthPixels;
         int heightPixels = display.heightPixels;
         width = ((double) widthPixels) / heightPixels;
-        height = ((double) heightPixels) / widthPixels;
         if (playerType.equals("p1")) {
             xLoc = (int) (width * 1000) - 100;
             yLoc = 0;
