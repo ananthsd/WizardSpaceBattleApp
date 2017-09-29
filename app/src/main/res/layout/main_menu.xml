@@ -24,8 +24,30 @@
         android:text="@string/game_title"
         android:textSize="25sp" />
 
+    <Button
+            android:id="@+id/play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:text="Play"
+        android:textSize="50sp"
 
-    <ImageView
+            />
+        <Button
+            android:id="@+id/settings_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/play_button"
+            android:layout_marginTop="10dp"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:text="Settings"
+            android:textSize="20sp"
+            />
+    <!--<ImageView
         android:id="@+id/play_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,14 +72,14 @@
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:src="@drawable/settingsimage"
-        />
+        />-->
 
     <Button
         android:id="@+id/tutorial"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/settings_image"
+        android:layout_below="@+id/settings_button"
         android:layout_centerHorizontal="true"
         android:text="Tutorial" />
 

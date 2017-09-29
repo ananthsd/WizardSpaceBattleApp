@@ -24,7 +24,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
+    compile 'com.github.rey5137:material:1.2.4'
     compile 'com.github.takusemba:spotlight:1.1.1'
     compile 'com.pes.materialcolorpicker:library:1.2.0'
     compile 'org.adw.library:discrete-seekbar:1.0.1'

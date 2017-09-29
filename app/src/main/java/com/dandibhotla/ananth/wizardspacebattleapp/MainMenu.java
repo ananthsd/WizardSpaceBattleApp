@@ -17,7 +17,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,7 +26,7 @@ import static com.dandibhotla.ananth.wizardspacebattleapp.MyGLRenderer.tutorialS
 
 public class MainMenu extends Activity {
     private RelativeLayout menuLayout;
-    private ImageView playButton, settingsButton;
+    private Button playButton, settingsButton;
     private Button tutorialButton;
     private Animation animation;
     private TextView title;
@@ -114,8 +113,8 @@ public class MainMenu extends Activity {
     }
 
     private void init() {
-        playButton = (ImageView) findViewById(R.id.play_image);
-        settingsButton = (ImageView) findViewById(R.id.settings_image);
+        playButton = (Button) findViewById(R.id.play_button);
+        settingsButton = (Button) findViewById(R.id.settings_button);
         tutorialButton = (Button) findViewById(R.id.tutorial);
         animation = AnimationUtils.loadAnimation(MainMenu.this, R.anim.play_button_anim);
         animation.setDuration(500);

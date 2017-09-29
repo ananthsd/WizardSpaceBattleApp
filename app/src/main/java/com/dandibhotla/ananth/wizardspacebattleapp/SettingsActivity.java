@@ -26,12 +26,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
-
-import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,7 @@ public class SettingsActivity extends Activity {
     private LinearLayout glLinearLayout;
     private Button p1Color, p2Color, bgColor, volumeButton,resetColorButton;
     private ColorPicker p1ColorPicker, p2ColorPicker, bgColorPicker;
-    private DiscreteSeekBar volumeBar;
+    private SeekBar volumeBar;
     private TextView text_seekbar;
     private CheckBox toggleMusic;
     private ImageButton backButton;
@@ -294,8 +293,9 @@ public class SettingsActivity extends Activity {
                 }
             }
         });
-        volumeBar = (DiscreteSeekBar) findViewById(R.id.volumeBar);
+        volumeBar = (SeekBar) findViewById(R.id.volumeBar);
         volumeBar.setProgress(sharedPref.getInt("musicVolume", 80));
+
 
 
         volumeButton = (Button) findViewById(R.id.setVolumeButton);
@@ -314,9 +314,10 @@ public class SettingsActivity extends Activity {
             }
         });
         new Color();
+        /*
         volumeBar.setTrackColor(0xFFFF4081);
         volumeBar.setScrubberColor(0xFFFF4081);
-        volumeBar.setThumbColor(0xFFFF4081,0xFFFF4081);
+        volumeBar.setThumbColor(0xFFFF4081,0xFFFF4081);*/
     }
 
     @Override

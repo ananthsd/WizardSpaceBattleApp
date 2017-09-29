@@ -109,6 +109,8 @@
                             android:layout_below="@id/bgColorButton"
 
                             android:text="Reset Colors" />
+
+
                     </RelativeLayout>
                 </ScrollView>
 
@@ -120,37 +122,52 @@
                     android:orientation="horizontal"
                     android:visibility="gone">
 
-                    <LinearLayout
+
+
+                        <!--<org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                            android:id="@+id/volumeBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:dsb_max="100"
+                            app:dsb_min="0"
+                            android:layout_centerVertical="true"></org.adw.library.widgets.discreteseekbar.DiscreteSeekBar>-->
+                    <SeekBar
+                        android:id="@+id/volumeBar"
+                        style="@style/Widget.AppCompat.SeekBar.Discrete"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
 
-                        <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-                            android:id="@+id/volumeBar"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".8"
-                            app:dsb_max="100"
-                            app:dsb_min="0"></org.adw.library.widgets.discreteseekbar.DiscreteSeekBar>
-
+                        android:max="100" />
+                    <Button
+                        android:id="@+id/setVolumeButton"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/volumeBar"
+                        android:layout_alignParentRight="true"
+                        android:text="Set Volume" />
                         <CheckBox
                             android:id="@+id/checkMusicBox"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/volumeBar"
-                            android:layout_centerHorizontal="true"
+                            android:layout_alignParentLeft="true"
                             android:checked="false"
                             android:text="Toggle Music" />
 
-                        <Button
-                            android:id="@+id/setVolumeButton"
-                            style="@style/Widget.AppCompat.Button.Colored"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/volumeBar"
-                            android:text="Set Volume" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:gravity="center"
+                        android:layout_centerInParent="true"
+                        android:text="Music By Antti Luode"/>
+
                         />
-                    </LinearLayout>
+
 
 
                 </RelativeLayout>
