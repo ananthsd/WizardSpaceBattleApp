@@ -54,7 +54,6 @@ public class SettingsRenderer implements GLSurfaceView.Renderer {
 
     }
 
-    private float[] mRotationMatrix = new float[16];
 
     @Override
     public void onDrawFrame(GL10 unused) {

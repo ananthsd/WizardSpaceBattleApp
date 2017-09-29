@@ -33,7 +33,7 @@ public class GameScreen extends Activity {
     private static Player player1, player2;
     private static double widthPixels, heightPixels;
     public static boolean p1Touch, p2Touch;
-    public static ImageButton pauseButton;
+    public ImageButton pauseButton;
     private RelativeLayout parentMenu, subMenu;
     private Button resumeButton,menuButton;
     public static boolean isPaused;

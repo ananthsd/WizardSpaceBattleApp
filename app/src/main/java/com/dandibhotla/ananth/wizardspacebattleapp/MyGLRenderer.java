@@ -26,7 +26,6 @@ import java.util.Arrays;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import static com.dandibhotla.ananth.wizardspacebattleapp.GameScreen.pauseButton;
 import static com.dandibhotla.ananth.wizardspacebattleapp.MainMenu.firstTime;
 
 
@@ -113,7 +112,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //Checks if bullets are out of bounds
         //Log.v("positions",GameScreen.mPreviousX+";"+GameScreen.mPreviousY);
 
-        Log.v("pause","should not print when paused");
         for (int i = player1.getBullets().size() - 1; i >= 0; i--) {
             Bullet bullet = player1.getBullets().get(i);
             if (bullet.outOfBounds()) {
@@ -331,7 +329,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 .setTitle("Information")
                 .setDescription("Each player has a score and health indicator.")
                 .build();
-        final SimpleTarget fifthTarget = new SimpleTarget.Builder((Activity) context).setPoint(pauseButton)
+        final SimpleTarget fifthTarget = new SimpleTarget.Builder((Activity) context).setPoint(((Activity) context).findViewById(R.id.pauseButton))
                 .setRadius(200f)
                 .setTitle("Pause")
                 .setDescription("Lets you pause and open up the pause menu")
