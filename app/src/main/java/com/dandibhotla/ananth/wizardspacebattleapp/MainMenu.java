@@ -110,6 +110,7 @@ public class MainMenu extends Activity {
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         }
+        mGLView.getRenderer().clearLines();
     }
 
     private void init() {

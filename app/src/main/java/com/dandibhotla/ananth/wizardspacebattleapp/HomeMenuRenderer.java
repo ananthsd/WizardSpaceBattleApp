@@ -18,11 +18,13 @@ public class HomeMenuRenderer implements GLSurfaceView.Renderer {
         private float screenWidth, screenHeight;
         private Context context;
         private ArrayList<Star> stars;
+        private ArrayList<Line> lines;
         private int scaler = 3;
     private int count = 0;
         public HomeMenuRenderer(Context context) {
             this.context = context;
             stars = new ArrayList<>();
+            lines = new ArrayList<>();
         }
 
         @Override
@@ -61,22 +63,57 @@ public class HomeMenuRenderer implements GLSurfaceView.Renderer {
                     i--;
                 }
             }
+            Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+            Matrix.multiplyMM(MVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+            for(int i = 0; i < lines.size(); i++){
+                lines.get(i).draw(MVPMatrix);
+                if(lines.get(i).move()){
+                    if(lines.size()>0) {
+                        lines.remove(i);
+                        i--;
+                    }
+                }
+
+            }
         count++;
 
         }
-
+    private float[] MVPMatrix = new float[16];
 
         public void addStar(){
             float[] startColor ={(float)Math.random(),(float)Math.random(),(float)Math.random(),1f} ;
+            float xStart = ((float)Math.random()*(screenWidth*2))-screenWidth*1.0f;
+            //Log.v("lines",xStart+"");
+            float yStart = 1;
             float[] mMVPMatrix = new float[16];
             Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
             // Calculate the projection and view transformation
             Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 //((float)Math.random()*(screenWidth*2))-screenWidth
-            Matrix.translateM(mMVPMatrix, 0, ((float)Math.random()*(screenWidth*3))-screenWidth*1.5f, 1, 0); // apply translation
+
+            Matrix.translateM(mMVPMatrix, 0, xStart, yStart, 0); // apply translation
             Matrix.scaleM(mMVPMatrix,0,scaler,scaler,scaler);
-            stars.add(new Star(startColor,mMVPMatrix));
+
+            float[] lineMatrix = new float[16];
+            Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+
+            // Calculate the projection and view transformation
+            Matrix.multiplyMM(lineMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+
+            Line line = new Line(lineMatrix,startColor,0,1,true);
+
+
+            line.setLineWidth(3f);
+            lines.add(line);
+             line = new Line(lineMatrix,startColor,0,1,false);
+
+
+            line.setLineWidth(3f);
+            lines.add(line);
+            //stars.add(new Star(startColor,mMVPMatrix,lineMatrix,xStart,yStart));
+
+
         }
         //private final float[] mMVPMatrix = new float[16];
         private final float[] mProjectionMatrix = new float[16];
@@ -125,5 +162,8 @@ public class HomeMenuRenderer implements GLSurfaceView.Renderer {
 
         public float getScreenHeight() {
             return screenHeight;
+        }
+        public void clearLines(){
+            lines.clear();
         }
 }

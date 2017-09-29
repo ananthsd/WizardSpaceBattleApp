@@ -17,9 +17,12 @@ public class Star {
     private FloatBuffer mVertexBuffer;
     private float vertices[] = new float[364 * 3];
     private float[] mMVPMatrix = new float[16];
+    private float[] lineMatrix;
     float color[] = {0f, 0f, 0f, 1f};
     private float verticalDisplacement;
     private float verticalStep = .005f;
+    private Line trail;
+    private float initialX, initialY,currentX,currentY;
     private final String vertexShaderCode =
             "uniform mat4 uMVPMatrix;" +
                     "attribute vec4 vPosition;" +
@@ -39,9 +42,15 @@ public class Star {
 public void move(){
     Matrix.translateM(mMVPMatrix, 0, -verticalStep/2, -verticalStep, 0);
     verticalDisplacement+=verticalStep;
+    currentX-=verticalStep/2;
+    currentY-=verticalStep;
+    trail.setCoords(initialX,initialY,currentX,currentY);
 }
-    public Star(float[] color,float[] matrix) {
-
+    public Star(float[] color,float[] matrix, float[] lineMatrix, float initialX, float initialY) {
+        this.initialX = initialX;
+        this.initialY = initialY;
+        this.currentX = initialX;
+        this.currentY = initialY;
         vertices[0] = 0.07f;
         vertices[1] = 0.02f;
 
@@ -73,6 +82,9 @@ public void move(){
         this.color = color;
 
         mMVPMatrix = matrix;
+        this.lineMatrix = lineMatrix;
+        trail = new Line();
+        trail.setLineWidth(3f);
     }
 
     public static int loadShader(int type, String shaderCode) {
@@ -121,6 +133,7 @@ public void move(){
 
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);
+        //trail.draw(lineMatrix,color);
 
     }
 
