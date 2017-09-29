@@ -112,10 +112,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 unused) {
         //Checks if bullets are out of bounds
         //Log.v("positions",GameScreen.mPreviousX+";"+GameScreen.mPreviousY);
-        if(GameScreen.isPaused){
-            return;
-        }
 
+        Log.v("pause","should not print when paused");
         for (int i = player1.getBullets().size() - 1; i >= 0; i--) {
             Bullet bullet = player1.getBullets().get(i);
             if (bullet.outOfBounds()) {

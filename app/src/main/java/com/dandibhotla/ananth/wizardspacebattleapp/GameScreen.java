@@ -213,6 +213,7 @@ public class GameScreen extends Activity {
 
                 parentMenu.setBackgroundColor(Color.parseColor("#80000000"));
                 isPaused = true;
+                mGLView.onPause();
             }
         });
         resumeButton.setOnClickListener(new View.OnClickListener() {
@@ -222,6 +223,7 @@ public class GameScreen extends Activity {
                 pauseButton.setVisibility(View.VISIBLE);
                 parentMenu.setBackgroundColor(Color.parseColor("#00000000"));
                 isPaused = false;
+                mGLView.onResume();
             }
         });
         menuButton.setOnClickListener(new View.OnClickListener() {
