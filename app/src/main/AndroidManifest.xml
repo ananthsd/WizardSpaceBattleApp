@@ -30,7 +30,7 @@
             android:screenOrientation="landscape"></activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_game_screen"
+            android:label="@string/title_activity_settings_screen"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="landscape"></activity>
         <service android:enabled="true" android:name=".BackgroundSoundService" />

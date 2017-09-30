@@ -108,15 +108,16 @@
             android:id="@+id/subMenu"
             android:visibility="gone">
             <!-- android:background="#80000000"-->
-            <Button
+            <com.rey.material.widget.Button
                 android:id="@+id/resumeButton"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
+                rd_enable="true"
                 android:text="Resume" />
-            <Button
+            <com.rey.material.widget.Button
                 android:id="@+id/backMenuButton"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
@@ -125,6 +126,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 android:layout_below="@id/resumeButton"
+                rd_enable="true"
                 android:text="Menu" />
         </RelativeLayout>
     </RelativeLayout>

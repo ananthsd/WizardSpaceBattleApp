@@ -24,7 +24,7 @@
         android:text="@string/game_title"
         android:textSize="25sp" />
 
-    <Button
+    <com.rey.material.widget.Button
             android:id="@+id/play_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,9 +33,9 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:text="Play"
         android:textSize="50sp"
-
+        rd_enable="true"
             />
-        <Button
+        <com.rey.material.widget.Button
             android:id="@+id/settings_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,6 +46,7 @@
             style="@style/Widget.AppCompat.Button.Colored"
             android:text="Settings"
             android:textSize="20sp"
+            rd_enable="true"
             />
     <!--<ImageView
         android:id="@+id/play_image"
@@ -74,14 +75,15 @@
         android:src="@drawable/settingsimage"
         />-->
 
-    <Button
+    <com.rey.material.widget.Button
         android:id="@+id/tutorial"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/settings_button"
         android:layout_centerHorizontal="true"
-        android:text="Tutorial" />
+        android:text="Tutorial"
+        rd_enable="true"/>
 
 
 </RelativeLayout>

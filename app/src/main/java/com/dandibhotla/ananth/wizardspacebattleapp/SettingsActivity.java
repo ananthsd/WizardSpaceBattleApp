@@ -20,17 +20,17 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
+import com.rey.material.widget.CheckBox;
+import com.rey.material.widget.Slider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class SettingsActivity extends Activity {
     private LinearLayout glLinearLayout;
     private Button p1Color, p2Color, bgColor, volumeButton,resetColorButton;
     private ColorPicker p1ColorPicker, p2ColorPicker, bgColorPicker;
-    private SeekBar volumeBar;
+    private Slider volumeBar;
     private TextView text_seekbar;
     private CheckBox toggleMusic;
     private ImageButton backButton;
@@ -293,9 +293,9 @@ public class SettingsActivity extends Activity {
                 }
             }
         });
-        volumeBar = (SeekBar) findViewById(R.id.volumeBar);
-        volumeBar.setProgress(sharedPref.getInt("musicVolume", 80));
+        volumeBar = (Slider) findViewById(R.id.volumeBar);
 
+        volumeBar.setValue(sharedPref.getInt("musicVolume", 80),true);
 
 
         volumeButton = (Button) findViewById(R.id.setVolumeButton);
@@ -304,11 +304,11 @@ public class SettingsActivity extends Activity {
             public void onClick(View v) {
                 SharedPreferences sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putInt("musicVolume", volumeBar.getProgress());
+                editor.putInt("musicVolume", volumeBar.getValue());
                 editor.commit();
                 if(player!=null) {
                     if (toggleMusic.isChecked()) {
-                        BackgroundSoundService.setVolume(volumeBar.getProgress());
+                        BackgroundSoundService.setVolume(volumeBar.getValue());
                     }
                 }
             }
