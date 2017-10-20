@@ -24,3 +24,6 @@ Frame rates of the gifs don't represent the acutal framrate on a physical device
 ### Settings
 ![alt text](https://github.com/Thedarkbobman/WizardSpaceBattleApp/blob/master/ColorSettingsSS.png "Color Settings Png")
 ![alt text](https://github.com/Thedarkbobman/WizardSpaceBattleApp/blob/master/MusicSettingSS.png "Music Settings Png")
+
+## What's next?
+I am currently working on multiplayer through google game's realtime mutliplayer API.
