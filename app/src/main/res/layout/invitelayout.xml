@@ -14,28 +14,35 @@
     </LinearLayout>
 
     <!-- MAIN SCREEN -->
-    <LinearLayout android:id="@+id/screen_main" style="@style/LLScreen">
-        <TextView style="@style/GameTitle" />
+    <RelativeLayout android:id="@+id/screen_main" style="@style/LLScreen">
+        <!--<TextView style="@style/GameTitle" />-->
 
         <Button android:id="@+id/button_quick_game"
             style="@style/MainScreenButton"
             android:text="@string/quick_game" />
-        <TextView style="@style/MainScreenButtonBlurb"
-            android:text="@string/quick_game_explanation" />
+
         <Button android:id="@+id/button_invite_players"
             style="@style/MainScreenButton"
-            android:text="@string/invite_players" />
-        <TextView style="@style/MainScreenButtonBlurb"
-            android:text="@string/invite_players_explanation" />
+            android:text="@string/invite_players"
+            android:layout_below="@id/button_quick_game"/>
+
         <Button android:id="@+id/button_see_invitations"
             style="@style/MainScreenButton"
-            android:text="@string/see_invitations" />
-        <TextView style="@style/MainScreenButtonBlurb"
-            android:text="@string/see_invitations_explanation" />
+            android:text="@string/see_invitations"
+            android:layout_below="@id/button_invite_players"/>
+
         <Button android:id="@+id/button_sign_out"
             style="@style/SignOutButton"
-            android:text="@string/sign_out" />
-    </LinearLayout>
+            android:text="@string/sign_out"
+            android:layout_below="@id/button_see_invitations"/>
+        <TextView style="@style/MainScreenButtonBlurb"
+            android:text="NOTE: You are always player 1"
+           android:layout_below="@id/button_sign_out"
+            android:id="@+id/player1Note"/>
+        <TextView style="@style/MainScreenButtonBlurb"
+            android:text="Best played over WiFi"
+            android:layout_below="@id/player1Note" />
+    </RelativeLayout>
 
     <!-- INVITATION POPUP -->
     <LinearLayout android:id="@+id/invitation_popup" style="@style/InvPopup">

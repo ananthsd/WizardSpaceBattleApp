@@ -643,19 +643,29 @@ public class MultiplayerActivity extends Activity
                 if (mSecondsLeft <= 0)
                     return;
                 try {
-                    gameTick();
+                    broadcast();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 h.postDelayed(this, 10);
             }
         }, 10);
+        final Handler h2 = new Handler();
+        h2.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mSecondsLeft <= 0)
+                    return;
+                try {
+                    broadcastScore();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                h2.postDelayed(this, 1000);
+            }
+        }, 1000);
     }
 
-    // Game tick -- update countdown, check if game ended.
-    void gameTick() throws IOException {
-        broadcast();
-    }
 
 
 
@@ -784,12 +794,7 @@ public class MultiplayerActivity extends Activity
             }
         }
     }
-
-    void broadcast() throws IOException {
-        if (isPaused) {
-            return;
-        }
-
+    void broadcastScore() throws IOException{
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
@@ -798,6 +803,24 @@ public class MultiplayerActivity extends Activity
         dataOutputStream.writeChar('S');
         dataOutputStream.writeInt(player1.getScore());
         byte[] scoreData = byteArrayOutputStream.toByteArray();
+
+        for (Participant p : mParticipants) {
+            if (p.getParticipantId().equals(mMyId))
+                continue;
+            if (p.getStatus() != Participant.STATUS_JOINED)
+                continue;
+
+
+            Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null, scoreData,
+                    mRoomId, p.getParticipantId());
+        }
+
+    }
+    void broadcast() throws IOException {
+        if (isPaused) {
+            return;
+        }
+
 
 
         ByteArrayOutputStream byteArrayOutputStream2 = new ByteArrayOutputStream();
@@ -898,9 +921,6 @@ public class MultiplayerActivity extends Activity
             if (p.getStatus() != Participant.STATUS_JOINED)
                 continue;
 
-
-            Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null, scoreData,
-                    mRoomId, p.getParticipantId());
             Games.RealTimeMultiplayer.sendUnreliableMessage(mGoogleApiClient, otherData, mRoomId,
                     p.getParticipantId());
             /*for(byte[] bytes:bulletsPos){
