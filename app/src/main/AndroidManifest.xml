@@ -33,6 +33,11 @@
             android:label="@string/title_activity_settings_screen"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="landscape"></activity>
+        <activity
+            android:name=".MultiplayerActivity"
+            android:label="@string/title_activity_settings_screen"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="landscape"></activity>
         <service android:enabled="true" android:name=".BackgroundSoundService" />
         <meta-data android:name="com.google.android.gms.games.APP_ID"
             android:value="@string/app_id" />

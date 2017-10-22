@@ -10,12 +10,17 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 }
 
@@ -24,6 +29,8 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile project(':BaseGameUtils')
+    compile 'com.google.android.gms:play-services:11.0.4'
     compile 'com.github.rey5137:material:1.2.4'
     compile 'com.github.takusemba:spotlight:1.1.1'
     compile 'com.pes.materialcolorpicker:library:1.2.0'
@@ -34,8 +41,11 @@ dependencies {
     compile 'com.google.firebase:firebase-core:10.0.1'
     compile 'com.google.firebase:firebase-crash:10.0.1'
     testCompile 'junit:junit:4.12'
+
 }
 
+apply plugin: 'com.android.application' //or apply plugin: 'java'
 
 
 apply plugin: 'com.google.gms.google-services'
+

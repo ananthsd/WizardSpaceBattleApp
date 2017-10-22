@@ -117,7 +117,7 @@ public class BulletObject {
 
 
     public void draw(ArrayList<Bullet> bullets) {
-        for (Bullet b : bullets) {
+        for (Bullet b : new ArrayList<>(bullets)) {
             // Add program to OpenGL environment
             GLES20.glUseProgram(mProgram);
 

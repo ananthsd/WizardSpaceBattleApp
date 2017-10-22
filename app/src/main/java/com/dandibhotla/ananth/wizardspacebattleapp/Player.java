@@ -26,6 +26,25 @@ public class Player {
     private final int damageIncrement = 5;
     private double angle, power;
     public static final String LEFT_FACING = "left", RIGHT_FACING = "right";
+    private static long currentId;
+    private float[] projectionM,viewM;
+
+    public float[] getProjectionM() {
+        return projectionM;
+    }
+
+    public void setProjectionM(float[] projectionM) {
+        this.projectionM = projectionM;
+    }
+
+    public float[] getViewM() {
+        return viewM;
+    }
+
+    public void setViewM(float[] viewM) {
+        this.viewM = viewM;
+    }
+
     public TextView getScoreView() {
         return scoreView;
     }
@@ -67,7 +86,8 @@ public class Player {
         this.healthView = healthView;
         //  Log.v("player", "w:" + width + "; h:" + height);
     }
-    public void reset(){
+
+    public void reset() {
         if (playerType.equals("p1")) {
             xLoc = (int) (width * 1000) - 100;
             yLoc = 0;
@@ -75,9 +95,26 @@ public class Player {
             xLoc = (int) (-width * 1000) + 100;
             yLoc = 0;
         }
-        health=1000;
+        health = 1000;
         bullets.removeAll(bullets);
 
+    }
+
+    public void setHealth(int health) {
+        Log.v("sethealth",health+"");
+        this.health = health;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void setxLoc(float xLoc) {
+        this.xLoc = (int) (xLoc * 1000);
+    }
+
+    public void setyLoc(float yLoc) {
+        this.yLoc = (int) (yLoc * 1000);
     }
 
     public float getxLoc() {
@@ -87,6 +124,7 @@ public class Player {
     public float getyLoc() {
         return (float) yLoc / 1000;
     }
+
     public int getxLocPx() {
         return xLoc;
     }
@@ -94,13 +132,16 @@ public class Player {
     public int getyLocPx() {
         return yLoc;
     }
-    public ArrayList<Bullet> getBullets() {
+
+    public synchronized ArrayList<Bullet> getBullets() {
         return bullets;
     }
-    public void setMoveValues(double angle, double power){
-        this.angle=angle;
-        this.power=power;
+
+    public void setMoveValues(double angle, double power) {
+        this.angle = angle;
+        this.power = power;
     }
+
     public void move() {
         //   Log.v("move","Angle:"+angle+"; Power:"+power);
         if (power > MAX_POWER) {
@@ -116,15 +157,15 @@ public class Player {
 
         double xMovement = 0.01f / ((MAX_POWER)) * xPower * 1000;
         double yMovement = 0.01f / ((MAX_POWER)) * yPower * 1000;
-       // xMovement*=100;
+        // xMovement*=100;
         //yMovement*=100;
-       // xMovement=Math.round(xMovement);
-       // yMovement=Math.round(yMovement);
-       // xMovement/=100;
-       // yMovement/=100;
+        // xMovement=Math.round(xMovement);
+        // yMovement=Math.round(yMovement);
+        // xMovement/=100;
+        // yMovement/=100;
 
-          Log.v("moveLoc","X:"+xMovement+"; Y:"+yMovement);
-          Log.v("moveLoc","X:"+(int)xMovement+"; Y:"+(int)yMovement);
+        Log.v("moveLoc", "X:" + xMovement + "; Y:" + yMovement);
+        Log.v("moveLoc", "X:" + (int) xMovement + "; Y:" + (int) yMovement);
         xLoc += xMovement;
         yLoc += yMovement;
         // Log.v("moveLoc", "X:" + xLoc + "; Y:" + yLoc);
@@ -149,33 +190,51 @@ public class Player {
     public void addBullet(String direction, float[] projM, float[] viewM) {
 
         if (playerType.equals(PLAYER_ONE)) {
-            bullets.add(new Bullet(context, direction, PLAYER_ONE, xLoc, yLoc, projM, viewM));
+            bullets.add(new Bullet(context, direction, PLAYER_ONE, xLoc, yLoc, projM, viewM, currentId));
         } else {
-            bullets.add(new Bullet(context, direction, PLAYER_TWO, xLoc, yLoc, projM, viewM));
+            bullets.add(new Bullet(context, direction, PLAYER_TWO, xLoc, yLoc, projM, viewM, currentId));
+        }
+        currentId++;
+        if (currentId == Long.MAX_VALUE) {
+            currentId = 0;
+        }
+    }
+    public void addBullet(String direction, float x, float y) {
+        int xVal = (int)(x*1000);
+        int yVal = (int)(y*1000);
+        if (playerType.equals(PLAYER_ONE)) {
+            bullets.add(new Bullet(context, direction, PLAYER_ONE, xVal, yVal, projectionM, viewM, currentId));
+        } else {
+            bullets.add(new Bullet(context, direction, PLAYER_TWO, xVal, yVal, projectionM, viewM, currentId));
+        }
+        currentId++;
+        if (currentId == Long.MAX_VALUE) {
+            currentId = 0;
         }
     }
     public void resetBullet(Bullet b, String direction, float[] projM, float[] viewM) {
-        b.reset(xLoc,yLoc,direction,playerType);
+        b.reset(xLoc, yLoc, direction, playerType);
     }
+
     private boolean up = false;
+
     public void moveBullets() {
         for (Bullet b : bullets) {
             b.move();
         }
         double interval = 0;
 
-        if(up) {
-            yLoc+=interval;
-        }
-        else{
-            yLoc-=interval;
+        if (up) {
+            yLoc += interval;
+        } else {
+            yLoc -= interval;
         }
         if (yLoc > 900) {
-            up=false;
+            up = false;
             yLoc = 900;
             //  } else if (yLoc < -height * 1000 - 300) {
         } else if (yLoc < -900) {
-            up=true;
+            up = true;
             yLoc = -900;
         }
     }

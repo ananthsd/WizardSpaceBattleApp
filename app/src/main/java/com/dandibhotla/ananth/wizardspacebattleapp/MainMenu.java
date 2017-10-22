@@ -20,19 +20,21 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import static com.dandibhotla.ananth.wizardspacebattleapp.MyGLRenderer.tutorialShown;
 
 public class MainMenu extends Activity {
     private RelativeLayout menuLayout;
-    private Button playButton, settingsButton;
+    private Button playButton, settingsButton, multiplayerButton;
     private Button tutorialButton;
     private Animation animation;
     private TextView title;
     private FirebaseAnalytics mFirebaseAnalytics;
     private static MyGLSurfaceView mGLView;
     public static boolean firstTime;
+    private GoogleApiClient mGoogleApiClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +118,7 @@ public class MainMenu extends Activity {
         playButton = (Button) findViewById(R.id.play_button);
         settingsButton = (Button) findViewById(R.id.settings_button);
         tutorialButton = (Button) findViewById(R.id.tutorial);
+        multiplayerButton = (Button) findViewById(R.id.multiplayer_button);
         animation = AnimationUtils.loadAnimation(MainMenu.this, R.anim.play_button_anim);
         animation.setDuration(500);
 
@@ -137,6 +140,7 @@ public class MainMenu extends Activity {
                         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);*/
                         Intent intent = new Intent(MainMenu.this, GameScreen.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        intent.putExtra("multiplayer",false);
                         startActivity(intent);
                     }
                 });
@@ -152,7 +156,7 @@ public class MainMenu extends Activity {
 
         animation = AnimationUtils.loadAnimation(MainMenu.this, R.anim.play_button_anim);
 
-        animation.setDuration(600);
+        animation.setDuration(700);
 
 
         animation.setAnimationListener(new Animation.AnimationListener() {
@@ -187,7 +191,38 @@ public class MainMenu extends Activity {
 
         animation = AnimationUtils.loadAnimation(MainMenu.this, R.anim.play_button_anim);
 
-        animation.setDuration(700);
+        animation.setDuration(600);
+
+
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                multiplayerButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(MainMenu.this, MultiplayerActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
+
+                    }
+                });
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        multiplayerButton.startAnimation(animation);
+
+        animation = AnimationUtils.loadAnimation(MainMenu.this, R.anim.play_button_anim);
+
+        animation.setDuration(500);
 
 
         animation.setAnimationListener(new Animation.AnimationListener() {
@@ -290,4 +325,5 @@ public class MainMenu extends Activity {
 
 
     }
+
 }

@@ -35,19 +35,33 @@
         android:textSize="50sp"
         rd_enable="true"
             />
+    <com.rey.material.widget.Button
+        android:id="@+id/multiplayer_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/play_button"
+        android:layout_marginTop="10dp"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:text="Multiplayer"
+        android:textSize="20sp"
+        rd_enable="true"
+        />
         <com.rey.material.widget.Button
             android:id="@+id/settings_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/play_button"
+            android:layout_below="@id/multiplayer_button"
             android:layout_marginTop="10dp"
             style="@style/Widget.AppCompat.Button.Colored"
             android:text="Settings"
             android:textSize="20sp"
             rd_enable="true"
             />
+
     <!--<ImageView
         android:id="@+id/play_image"
         android:layout_width="wrap_content"
@@ -80,7 +94,8 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/settings_button"
+        android:layout_toRightOf="@+id/play_button"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:text="Tutorial"
         rd_enable="true"/>
