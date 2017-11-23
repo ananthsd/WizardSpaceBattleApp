@@ -199,7 +199,7 @@ public class Player {
             currentId = 0;
         }
     }
-    public void addBullet(String direction, float x, float y) {
+    public synchronized void addBullet(String direction, float x, float y) {
         int xVal = (int)(x*1000);
         int yVal = (int)(y*1000);
         if (playerType.equals(PLAYER_ONE)) {
@@ -218,7 +218,7 @@ public class Player {
 
     private boolean up = false;
 
-    public void moveBullets() {
+    public synchronized void moveBullets() {
         for (Bullet b : bullets) {
             b.move();
         }

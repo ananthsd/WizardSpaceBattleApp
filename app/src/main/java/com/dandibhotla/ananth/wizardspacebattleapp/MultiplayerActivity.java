@@ -1,17 +1,4 @@
-/* Copyright (C) 2013 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package com.dandibhotla.ananth.wizardspacebattleapp;
 
@@ -61,10 +48,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static com.dandibhotla.ananth.wizardspacebattleapp.BackgroundSoundService.player;
@@ -624,7 +609,7 @@ public class MultiplayerActivity extends Activity
     void resetGameVars() {
         mSecondsLeft = GAME_DURATION;
         mScore = 0;
-        p2HealthMap.clear();
+
         mFinishedParticipants.clear();
     }
 
@@ -676,13 +661,13 @@ public class MultiplayerActivity extends Activity
 
     // Score of other participants. We update this as we receive their scores
     // from the network.
-    Map<String, Integer> p2HealthMap = new HashMap<String, Integer>();
+
 
     // Participants who sent us their final score.
     Set<String> mFinishedParticipants = new HashSet<String>();
 
 
-    private ArrayList<byte[]> bulletData = new ArrayList<>();
+
 
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage rtm) {
@@ -783,7 +768,7 @@ public class MultiplayerActivity extends Activity
 
                         int score = dataInputStream.readInt();
                         if(player2.getScore()<score)
-                        player2.setScore(score);
+                            player2.setScore(score);
 
                     }
 
@@ -792,7 +777,15 @@ public class MultiplayerActivity extends Activity
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            try {
+                byteArrayInputStream.close();
+                dataInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
+
     }
     void broadcastScore() throws IOException{
 
@@ -813,6 +806,12 @@ public class MultiplayerActivity extends Activity
 
             Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null, scoreData,
                     mRoomId, p.getParticipantId());
+        }
+        try {
+            byteArrayOutputStream.close();
+            dataOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
@@ -928,7 +927,12 @@ public class MultiplayerActivity extends Activity
                         p.getParticipantId());
             }*/
         }
-
+        try {
+            byteArrayOutputStream2.close();
+            dataOutputStream2.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -1236,7 +1240,7 @@ public class MultiplayerActivity extends Activity
             // Create an OpenGL ES 2.0 context
             setEGLContextClientVersion(2);
 
-            mRenderer = new MultiplayerRenderer(context, score1, score2, health1, health2, mParticipants.get(0), mRoomId, mGoogleApiClient, bulletData);
+            mRenderer = new MultiplayerRenderer(context, score1, score2, health1, health2, mParticipants.get(0), mRoomId, mGoogleApiClient);
 
             // Set the Renderer for drawing on the GLSurfaceView
 

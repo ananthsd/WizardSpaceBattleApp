@@ -26,7 +26,6 @@ import com.takusemba.spotlight.OnSpotlightStartedListener;
 import com.takusemba.spotlight.SimpleTarget;
 import com.takusemba.spotlight.Spotlight;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -61,8 +60,9 @@ public class MultiplayerRenderer implements GLSurfaceView.Renderer {
     private Participant participant;
     private String roomID;
     private GoogleApiClient googleApiClient;
-    private ArrayList<byte[]> bulletData;
-    public MultiplayerRenderer(Context context, TextView score1, TextView score2, TextView health1, TextView health2, Participant participant, String roomID, GoogleApiClient googleApiClient, ArrayList<byte[]> bulletData) {
+    private  boolean sendData;
+
+    public MultiplayerRenderer(Context context, TextView score1, TextView score2, TextView health1, TextView health2, Participant participant, String roomID, GoogleApiClient googleApiClient) {
         player1 = new Player(context, Player.PLAYER_ONE, score1, health1);
         player2 = new Player(context, Player.PLAYER_TWO, score2, health2);
         this.participant=participant;
@@ -72,7 +72,8 @@ public class MultiplayerRenderer implements GLSurfaceView.Renderer {
         fpsCounter = new FPSCounter();
         tutorialShown = false;
         this.googleApiClient=googleApiClient;
-        this.bulletData = bulletData;
+
+        sendData = true;
     }
 
     public Player getPlayer1() {
@@ -121,10 +122,7 @@ public class MultiplayerRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 unused) {
     Log.v("Player1RenderLocation",player1.getxLoc()+","+player1.getyLoc());
-for(byte[] buf: bulletData){
-    player2.addBullet(buf[4] == 'L' ? Player.LEFT_FACING : Player.RIGHT_FACING, (float) buf[0], (float)buf[1]);
-}
-bulletData.clear();
+
         for (int i = player1.getBullets().size() - 1; i >= 0; i--) {
             Bullet bullet = player1.getBullets().get(i);
             if (bullet.outOfBounds()) {
@@ -237,9 +235,9 @@ bulletData.clear();
                     alternateCounter = 0;
                 }*/
 
-              //  player1.addBullet(Player.LEFT_FACING, mProjectionMatrix, mViewMatrix);
-              //  player2.addBullet(Player.RIGHT_FACING, mProjectionMatrix, mViewMatrix);
-
+                player1.addBullet(Player.LEFT_FACING, mProjectionMatrix, mViewMatrix);
+                player2.addBullet(Player.RIGHT_FACING, mProjectionMatrix, mViewMatrix);
+                sendData = true;
                 counter = 0;
             }
         } else {
@@ -277,9 +275,9 @@ bulletData.clear();
                 }
                 alternateCounter= 0;*/
 
-             //   player1.addBullet(Player.RIGHT_FACING, mProjectionMatrix, mViewMatrix);
-              //  player2.addBullet(Player.LEFT_FACING, mProjectionMatrix, mViewMatrix);
-
+                player1.addBullet(Player.RIGHT_FACING, mProjectionMatrix, mViewMatrix);
+                player2.addBullet(Player.LEFT_FACING, mProjectionMatrix, mViewMatrix);
+                sendData = true;
                 if (counterInterval == counter) {
                     counter = 0;
                 }
@@ -432,7 +430,26 @@ bulletData.clear();
             }
         });
 
+    /*    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
 
+
+        try {
+            dataOutputStream.writeChar('B');
+            int size = player1.getBullets().size();
+            dataOutputStream.writeInt(size);
+            for(int i = 0; i < size;i++) {
+
+                dataOutputStream.writeInt(player1.getBullets().get(i).getDirection().equals(Player.RIGHT_FACING)?0:1);
+                dataOutputStream.writeFloat(-1 * player1.getBullets().get(i).getxLoc());
+                dataOutputStream.writeFloat(player1.getBullets().get(i).getyLoc());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        byte[] bulletData = byteArrayOutputStream.toByteArray();*/
 
         // Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
 
