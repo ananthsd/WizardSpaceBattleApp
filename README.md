@@ -26,4 +26,4 @@ Frame rates of the gifs don't represent the acutal framrate on a physical device
 ![alt text](https://github.com/Thedarkbobman/WizardSpaceBattleApp/blob/master/MusicSettingSS.png "Music Settings Png")
 
 ## What's next?
-I am currently working on multiplayer through google game's realtime mutliplayer API.
+I am currently working on multiplayer through google game's realtime mutliplayer API. It is super unoptimized right now, and the gets gets laggy after 20 seconds of multiplayer. Still looking into ways to fix this.
